@@ -1,0 +1,37 @@
+{
+  "name": "Train Tracks Across North America",
+  "stations": [
+    {"name": "Vancouver", "x": 10, "y": 50},
+    {"name": "San Francisco", "x": 10, "y": 500},
+    {"name": "Denver", "x": 400, "y": 500}
+  ],
+  "routes": [
+    {"type": "standard", "stationA": "Vancouver", "stationB": "San Francisco", "length": 5, "flavor": "lime"},
+    {"type": "standard", "stationA": "Denver", "stationB": "San Francisco", "length": 6, "flavor": "lemon"},
+    {"type": "standard", "stationA": "Vancouver", "stationB": "Denver", "length": 8, "flavor": "rainbow"}
+  ],
+  "tickets": [
+    {"stationA": "Vancouver", "stationB": "San Francisco", "score": 5},
+    {"stationA": "Denver", "stationB": "San Francisco", "score": 6},
+    {"stationA": "Vancouver", "stationB": "Denver", "score": 8}
+  ],
+  "cars": [
+    {"flavor": "lime", "count": 10},
+    {"flavor": "lemon", "count": 10},
+    {"flavor": "orange", "count": 10},
+    {"flavor": "cherry", "count": 10},
+    {"flavor": "strawberry", "count": 10},
+    {"flavor": "blueberry", "count": 10},
+    {"flavor": "vanilla", "count": 10},
+    {"flavor": "licorice", "count": 10},
+    {"flavor": "rainbow", "count": 10}
+  ],
+  "routeScoring": [
+    {"length": 1, "score": 1},
+    {"length": 2, "score": 2},
+    {"length": 3, "score": 4},
+    {"length": 4, "score": 7},
+    {"length": 5, "score": 10},
+    {"length": 6, "score": 15}
+  ]
+}
