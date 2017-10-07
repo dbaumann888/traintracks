@@ -4,6 +4,9 @@ import traintracks.api.Station;
 
 import java.util.UUID;
 
+/**
+ * Station (aka city, example: Seattle)
+ */
 public class TTStation implements Station {
 
     private final UUID id;
