@@ -6,4 +6,5 @@ public interface Ticket {
     UUID getId();
     Station getStationA();
     Station getStationB();
+    int getScore();
 }

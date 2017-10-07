@@ -2,10 +2,10 @@ package traintracks.api;
 
 import java.util.List;
 
-public interface GameState {
+public interface BoardState {
     Player getActivePlayer();
     List<CompletedRoute> getCompletedRoutes();
-    List<CarCard> getCarCardDrawPile();
-    List<CarCard> getOpenCards();
+    List<Car> getCarCardDrawPile();
+    List<Car> getOpenCards();
     List<Ticket> getTicketDrawPile();
 }

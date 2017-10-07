@@ -1,6 +1,6 @@
 package traintracks.api;
 
-public enum RouteFlavor {
+public enum Flavor {
     LIME(false),
     LEMON(false),
     ORANGE(false),
@@ -13,11 +13,11 @@ public enum RouteFlavor {
 
     private final boolean isWild;
 
-    RouteFlavor(boolean isWild) { this.isWild = isWild; }
+    Flavor(boolean isWild) { this.isWild = isWild; }
 
     public boolean isWild() { return isWild; }
 
-    public boolean matches(RouteFlavor flavorB) {
+    public boolean matches(Flavor flavorB) {
         return isWild() || flavorB.isWild() || equals(flavorB);
     }
 

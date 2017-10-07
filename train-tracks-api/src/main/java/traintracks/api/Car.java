@@ -2,7 +2,7 @@ package traintracks.api;
 
 import java.util.UUID;
 
-public interface CarCard {
+public interface Car {
     UUID getId();
-    RouteFlavor getRouteFlavor();
+    Flavor getFlavor();
 }

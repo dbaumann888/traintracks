@@ -10,12 +10,12 @@
     {"type": "standard", "stationA": "Denver", "stationB": "San Francisco", "length": 6, "flavor": "lemon"},
     {"type": "standard", "stationA": "Vancouver", "stationB": "Denver", "length": 8, "flavor": "rainbow"}
   ],
-  "tickets": [
+  "ticketDeck": [
     {"stationA": "Vancouver", "stationB": "San Francisco", "score": 5},
     {"stationA": "Denver", "stationB": "San Francisco", "score": 6},
     {"stationA": "Vancouver", "stationB": "Denver", "score": 8}
   ],
-  "cars": [
+  "carDeck": [
     {"flavor": "lime", "count": 10},
     {"flavor": "lemon", "count": 10},
     {"flavor": "orange", "count": 10},

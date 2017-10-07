@@ -8,8 +8,8 @@ public interface Board {
     String getName();
     List<Station> getStations();
     List<Route> getRoutes();
-    GameState getGameState();
-    CarDeck getCarDeck();
-    TicketDeck getTicketDeck();
+    BoardState getBoardState();
+    Deck<Car> getCarDeck();
+    Deck<Ticket> getTicketDeck();
     RouteScoring getRouteScoring();
 }

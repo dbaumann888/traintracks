@@ -4,13 +4,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class RouteFlavorTest {
+public class FlavorTest {
     @Test
     public void testMatchesTwoRegular() {
         // Arrange
 
         // Act
-        boolean matched = RouteFlavor.LIME.matches(RouteFlavor.LEMON);
+        boolean matched = Flavor.LIME.matches(Flavor.LEMON);
 
         // Assert
         assertTrue("expected no match", !matched);
@@ -21,7 +21,7 @@ public class RouteFlavorTest {
         // Arrange
 
         // Act
-        boolean matched = RouteFlavor.RAINBOW.matches(RouteFlavor.RAINBOW);
+        boolean matched = Flavor.RAINBOW.matches(Flavor.RAINBOW);
 
         // Assert
         assertTrue("expected to match", matched);
@@ -32,7 +32,7 @@ public class RouteFlavorTest {
         // Arrange
 
         // Act
-        boolean matched = RouteFlavor.LIME.matches(RouteFlavor.RAINBOW);
+        boolean matched = Flavor.LIME.matches(Flavor.RAINBOW);
 
         // Assert
         assertTrue("expected to match", matched);
@@ -43,7 +43,7 @@ public class RouteFlavorTest {
         // Arrange
 
         // Act
-        boolean matched = RouteFlavor.RAINBOW.matches(RouteFlavor.LEMON);
+        boolean matched = Flavor.RAINBOW.matches(Flavor.LEMON);
 
         // Assert
         assertTrue("expected to match", matched);
