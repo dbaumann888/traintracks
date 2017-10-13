@@ -1,14 +1,14 @@
 {
   "name": "Train Tracks Across North America",
   "stations": [
-    {"name": "Vancouver", "x": 10, "y": 50},
-    {"name": "San Francisco", "x": 10, "y": 500},
-    {"name": "Denver", "x": 400, "y": 500}
+    {"name": "Vancouver", "coordinates": {"x": 10, "y": 50}},
+    {"name": "San Francisco", "coordinates": {"x": 10, "y": 500}},
+    {"name": "Denver", "coordinates": {"x": 400, "y": 500}}
   ],
   "routes": [
-    {"type": "standard", "stationA": "Vancouver", "stationB": "San Francisco", "length": 5, "flavor": "lime"},
-    {"type": "standard", "stationA": "Denver", "stationB": "San Francisco", "length": 6, "flavor": "lemon"},
-    {"type": "standard", "stationA": "Vancouver", "stationB": "Denver", "length": 8, "flavor": "rainbow"}
+    {"stationA": "Vancouver", "stationB": "San Francisco", "type": "standard", "length": 5, "flavor": "lime", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "San Francisco", "type": "standard", "length": 6, "flavor": "lemon", "numEngines": 0},
+    {"stationA": "Vancouver", "stationB": "Denver", "type": "standard", "length": 8, "flavor": "rainbow", "numEngines": 0}
   ],
   "ticketDeck": [
     {"stationA": "Vancouver", "stationB": "San Francisco", "score": 5},

@@ -1,14 +1,16 @@
 package traintracks.engine.game;
 
+import com.google.common.collect.ImmutableList;
 import traintracks.api.Board;
 import traintracks.api.Game;
 import traintracks.api.Player;
+import traintracks.api.PlayerType;
 import traintracks.api.Turn;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-// import com.google.common.collect.ImmutableList;
 
 public class TTGame implements Game {
     private final UUID id;
@@ -32,10 +34,10 @@ public class TTGame implements Game {
     }
 
     public static void main(String[] argv) {
-//        Player player1 = new TTPlayer();
-//        Player player2 = new TTPlayer();
+        Player player1 = new TTPlayer("muish", Color.BLUE, PlayerType.HUMAN);
+        Player player2 = new TTPlayer("dantrayal", Color.BLACK, PlayerType.HUMAN);
         Board board = TTBoard.getTTBoard(TTSetup.NORTH_AMERICA);
-        List<Player> players = new ArrayList<>(); // ImmutableList.of(player1, player2);
+        List<Player> players = ImmutableList.of(player1, player2);
         Game game = new TTGame(players, board);
         System.out.println(game.toString());
     }

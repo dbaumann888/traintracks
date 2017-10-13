@@ -8,4 +8,5 @@ public enum RouteType {
     public String toString() {
         return name().toLowerCase();
     }
+
 }

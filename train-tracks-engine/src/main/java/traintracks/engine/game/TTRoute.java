@@ -11,19 +11,19 @@ public class TTRoute implements Route {
     private UUID id;
     private Station stationA;
     private Station stationB;
-    private int length;
     private RouteType type;
+    private int length;
     private Flavor flavor;
     private int numEngines;
 
-    public TTRoute(Station stationA, Station stationB, int length,
-                   RouteType type, Flavor flavor, int numEngines)
+    public TTRoute(Station stationA, Station stationB, RouteType type,
+                   int length, Flavor flavor, int numEngines)
     {
         this.id = UUID.randomUUID();
         this.stationA = stationA;
         this.stationB = stationB;
-        this.length = length;
         this.type = type;
+        this.length = length;
         this.flavor = flavor;
         this.numEngines = numEngines;
     }
@@ -31,8 +31,8 @@ public class TTRoute implements Route {
     public UUID getId() { return this.id; }
     public Station getStationA() { return this.stationA; }
     public Station getStationB() { return this.stationA; }
-    public int getLength() { return this.length; };
     public RouteType getType() { return this.type; };
+    public int getLength() { return this.length; };
     public Flavor getFlavor() { return this.flavor; };
     public int getNumEngines() { return this.numEngines; };
 }

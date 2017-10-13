@@ -1,13 +1,13 @@
 package traintracks.api;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface Board {
     UUID getId();
     String getName();
-    List<Station> getStations();
-    List<Route> getRoutes();
+    Map<String, Station> getStations();
+    RouteMap getRouteMap();
     BoardState getBoardState();
     Deck<Car> getCarDeck();
     Deck<Ticket> getTicketDeck();

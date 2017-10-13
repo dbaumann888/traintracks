@@ -1,13 +1,13 @@
 {
   "name": "Train Tracks Across Europe",
   "stations": [
-    {"name": "London", "x": 200, "y": 200},
-    {"name": "Paris", "x": 210, "y": 400},
-    {"name": "Moscow", "x": 800, "y": 200}
+    {"name": "London", "coordinates": {"x": 200, "y": 200}},
+    {"name": "Paris", "coordinates": {"x": 210, "y": 400}},
+    {"name": "Moscow", "coordinates": {"x": 800, "y": 200}}
   ],
   "routes": [
-    {"type": "ferry", "stationA": "London", "stationB": "Paris", "length": 3, "flavor": "rainbow"},
-    {"type": "standard", "stationA": "Paris", "stationB": "Moscow", "length": 8, "flavor": "licorice"}
+    {"stationA": "London", "stationB": "Paris", "type": "ferry", "length": 3, "flavor": "rainbow", "numEngines": 1},
+    {"stationA": "Paris", "stationB": "Moscow", "type": "standard", "length": 8, "flavor": "licorice", "numEngines": 0}
   ],
   "tickets": [
     {"stationA": "London", "stationB": "Paris", "score": 5},
