@@ -4,8 +4,9 @@ import java.util.List;
 
 public interface BoardState {
     Player getActivePlayer();
+    void setActivePlayer(Player nextPlayer);
     List<CompletedRoute> getCompletedRoutes();
-    List<Car> getCarCardDrawPile();
-    List<Car> getOpenCards();
-    List<Ticket> getTicketDrawPile();
+    Deck<Car> getCarDrawDeck();
+    OpenCards<Car> getOpenCards();
+    Deck<Ticket> getTicketDrawDeck();
 }

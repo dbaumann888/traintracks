@@ -35,4 +35,5 @@ public class TTRoute implements Route {
     public int getLength() { return this.length; };
     public Flavor getFlavor() { return this.flavor; };
     public int getNumEngines() { return this.numEngines; };
+    public String toString() { return getStationA().getName() + "-->" + getStationB().getName(); }
 }

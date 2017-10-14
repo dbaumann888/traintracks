@@ -18,4 +18,5 @@ public class TTRouteScoring implements RouteScoring {
     public Map<Integer, Integer> getScores() {
         return this.lengthToScoreMap;
     }
+    public String getString() { return getScores().toString(); }
 }

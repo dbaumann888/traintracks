@@ -1,5 +1,6 @@
 {
   "name": "Train Tracks Across Europe",
+  "carriageCount": 48,
   "stations": [
     {"name": "London", "coordinates": {"x": 200, "y": 200}},
     {"name": "Paris", "coordinates": {"x": 210, "y": 400}},
@@ -9,12 +10,12 @@
     {"stationA": "London", "stationB": "Paris", "type": "ferry", "length": 3, "flavor": "rainbow", "numEngines": 1},
     {"stationA": "Paris", "stationB": "Moscow", "type": "standard", "length": 8, "flavor": "licorice", "numEngines": 0}
   ],
-  "tickets": [
+  "ticketDeck": [
     {"stationA": "London", "stationB": "Paris", "score": 5},
     {"stationA": "Paris", "stationB": "Moscow", "score": 18},
     {"stationA": "London", "stationB": "Moscow", "score": 21}
   ],
-  "cars": [
+  "carDeck": [
     {"flavor": "lime", "count": 10},
     {"flavor": "lemon", "count": 10},
     {"flavor": "orange", "count": 10},

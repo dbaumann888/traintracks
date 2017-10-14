@@ -13,4 +13,5 @@ public class TTRouteMap implements RouteMap {
     }
 
     public List<Route> getRoutes() { return this.routes; }
+    public String toString() { return "route map with " + getRoutes().size() + " routes"; }
 }

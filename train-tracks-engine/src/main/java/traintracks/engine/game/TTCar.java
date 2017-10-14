@@ -16,4 +16,5 @@ public class TTCar implements Car {
 
     public UUID getId() { return this.id; }
     public Flavor getFlavor() { return this.flavor; }
+    public String toString() { return getFlavor().toString(); }
 }

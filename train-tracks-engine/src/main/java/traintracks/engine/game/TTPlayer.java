@@ -27,4 +27,5 @@ public class TTPlayer implements Player {
     public Color getColor() { return this.color; }
     public PlayerType getType() { return this.type; }
     public PlayerState getState() { return this.state; }
+    public String toString() { return this.getName(); }
 }

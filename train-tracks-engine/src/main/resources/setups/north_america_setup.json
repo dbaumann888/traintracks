@@ -1,5 +1,6 @@
 {
   "name": "Train Tracks Across North America",
+  "carriageCount": 48,
   "stations": [
     {"name": "Vancouver", "coordinates": {"x": 10, "y": 50}},
     {"name": "San Francisco", "coordinates": {"x": 10, "y": 500}},

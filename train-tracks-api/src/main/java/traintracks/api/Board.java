@@ -6,6 +6,7 @@ import java.util.UUID;
 public interface Board {
     UUID getId();
     String getName();
+    int getPlayerCarriageCount();
     Map<String, Station> getStations();
     RouteMap getRouteMap();
     BoardState getBoardState();

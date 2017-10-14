@@ -21,5 +21,6 @@ public class TTTicket implements Ticket {
     public UUID getId() { return this.id; }
     public Station getStationA() { return this.stationA; }
     public Station getStationB() { return this.stationB; }
-    public int getScore() { return this.score; };
+    public int getScore() { return this.score; }
+    public String toString() { return getStationA().getName() + "-" + getScore() + "->" + getStationB().getName(); }
 }

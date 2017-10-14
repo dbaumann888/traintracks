@@ -20,7 +20,8 @@ public class TTStation implements Station {
         this.coordinates = coordinates;
     }
 
-    public UUID getId() { return this.getId(); }
-    public String getName() { return this.getName(); }
+    public UUID getId() { return this.id; }
+    public String getName() { return this.name; }
     public Point getCoordinates() { return this.coordinates; }
+    public String toString() { return getName(); }
 }

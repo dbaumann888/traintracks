@@ -2,6 +2,7 @@ package traintracks.engine.game;
 
 import traintracks.api.Deck;
 
+import java.util.Collections;
 import java.util.List;
 
 public class TTDeck<T> implements Deck<T> {
@@ -24,6 +25,8 @@ public class TTDeck<T> implements Deck<T> {
     }
 
     public void shuffle() {
-        // TODO implement shuffle
+        Collections.shuffle(this.cards);
     }
+
+    public String toString() { return "" + this.cards.size(); }
 }
