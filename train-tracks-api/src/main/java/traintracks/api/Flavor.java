@@ -1,21 +1,26 @@
 package traintracks.api;
 
 public enum Flavor {
-    LIME(false),
-    LEMON(false),
-    ORANGE(false),
-    CHERRY(false),
-    STRAWBERRY(false),
-    BLUEBERRY(false),
-    VANILLA(false),
-    LICORICE(false),
-    RAINBOW(true);
+    LIME('m', false),
+    LEMON('n', false),
+    ORANGE('o', false),
+    CHERRY('c', false),
+    STRAWBERRY('s', false),
+    BLUEBERRY('b', false),
+    VANILLA('v', false),
+    LICORICE('i', false),
+    RAINBOW('r', true);
 
     private final boolean isWild;
+    private final char symbol;
 
-    Flavor(boolean isWild) { this.isWild = isWild; }
+    Flavor(char symbol, boolean isWild) {
+        this.symbol = symbol;
+        this.isWild = isWild;
+    }
 
-    public boolean isWild() { return isWild; }
+    public char getSymbol() { return this.symbol; }
+    public boolean isWild() { return this.isWild; }
 
     public boolean matches(Flavor flavorB) {
         return isWild() || flavorB.isWild() || equals(flavorB);

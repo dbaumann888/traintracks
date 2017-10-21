@@ -28,5 +28,6 @@ public class TTPlayerState implements PlayerState {
     public List<Car> getCars() { return this.cars; }
     public List<Ticket> getTickets() { return this.tickets; }
     public List<Ticket> getPendingTickets() { return this.pendingTickets; }
+    public void addPendingTicket(Ticket ticket) { this.pendingTickets.add(ticket); };
     public String toString() { return "" + this.getScore(); }
 }

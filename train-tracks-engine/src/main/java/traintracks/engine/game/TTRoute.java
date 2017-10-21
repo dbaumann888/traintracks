@@ -30,7 +30,7 @@ public class TTRoute implements Route {
 
     public UUID getId() { return this.id; }
     public Station getStationA() { return this.stationA; }
-    public Station getStationB() { return this.stationA; }
+    public Station getStationB() { return this.stationB; }
     public RouteType getType() { return this.type; };
     public int getLength() { return this.length; };
     public Flavor getFlavor() { return this.flavor; };

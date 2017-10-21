@@ -1,6 +1,6 @@
 {
   "name": "Train Tracks Across Europe",
-  "carriageCount": 48,
+  "carriageCount": 45,
   "stations": [
     {"name": "London", "coordinates": {"x": 200, "y": 200}},
     {"name": "Paris", "coordinates": {"x": 210, "y": 400}},
@@ -16,15 +16,15 @@
     {"stationA": "London", "stationB": "Moscow", "score": 21}
   ],
   "carDeck": [
-    {"flavor": "lime", "count": 10},
-    {"flavor": "lemon", "count": 10},
-    {"flavor": "orange", "count": 10},
-    {"flavor": "cherry", "count": 10},
-    {"flavor": "strawberry", "count": 10},
-    {"flavor": "blueberry", "count": 10},
-    {"flavor": "vanilla", "count": 10},
-    {"flavor": "licorice", "count": 10},
-    {"flavor": "rainbow", "count": 10}
+    {"flavor": "lime", "count": 12},
+    {"flavor": "lemon", "count": 12},
+    {"flavor": "orange", "count": 12},
+    {"flavor": "cherry", "count": 12},
+    {"flavor": "strawberry", "count": 12},
+    {"flavor": "blueberry", "count": 12},
+    {"flavor": "vanilla", "count": 12},
+    {"flavor": "licorice", "count": 12},
+    {"flavor": "rainbow", "count": 14}
   ],
   "routeScoring": [
     {"length": 1, "score": 1},

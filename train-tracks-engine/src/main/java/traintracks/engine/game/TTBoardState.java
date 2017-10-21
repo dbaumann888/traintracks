@@ -14,6 +14,7 @@ import java.util.List;
 
 public class TTBoardState implements BoardState {
     private Player activePlayer;
+    private boolean mustDrawSecondCar;
     private List<CompletedRoute> completedRoutes;
     private Deck<Car> carDrawDeck;
     private OpenCards<Car> openCars;
@@ -22,6 +23,7 @@ public class TTBoardState implements BoardState {
 
     public TTBoardState(Player startingPlayer, Deck<Car> fullCarDeck, Deck<Ticket> fullTicketDeck) {
         this.activePlayer = startingPlayer;
+        this.mustDrawSecondCar = false;
         this.completedRoutes = new ArrayList<>();
         this.carDrawDeck = fullCarDeck;
         this.carDrawDeck.shuffle();
@@ -37,9 +39,18 @@ public class TTBoardState implements BoardState {
 
     public Player getActivePlayer() { return this.activePlayer; }
     public void setActivePlayer(Player nextPlayer) { this.activePlayer = nextPlayer; }
+    public boolean mustDrawSecondCar() { return this.mustDrawSecondCar; }
+    public void setMustDrawSecondCar(boolean mustDrawSecondCar) { this.mustDrawSecondCar = mustDrawSecondCar; }
     public List<CompletedRoute> getCompletedRoutes() { return this.completedRoutes; }
     public Deck<Car> getCarDrawDeck() { return this.carDrawDeck; }
     public OpenCards<Car> getOpenCards() { return this.openCars; }
+    public Car drawCar(int index) {
+        if (index == -1) {
+            return this.carDrawDeck.drawCard();
+        } else {
+            return this.openCars.retrieveCard(index, this.carDrawDeck.drawCard());
+        }
+    }
     public Deck<Ticket> getTicketDrawDeck() { return this.ticketDrawDeck; }
     public String toString() { return "board state"; }
 }

@@ -7,4 +7,6 @@ public interface Game {
     List<Player> getPlayers();
     Board getBoard();
     List<Turn> getTurnHistory();
+    boolean over();
+    String toDisplayString();
 }

@@ -9,4 +9,5 @@ public interface PlayerState {
     List<Car> getCars();
     List<Ticket> getTickets();
     List<Ticket> getPendingTickets();
+    void addPendingTicket(Ticket ticket);
 }

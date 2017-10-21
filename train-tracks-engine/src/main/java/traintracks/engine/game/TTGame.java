@@ -1,13 +1,10 @@
 package traintracks.engine.game;
 
-import com.google.common.collect.ImmutableList;
 import traintracks.api.Board;
 import traintracks.api.Game;
 import traintracks.api.Player;
-import traintracks.api.PlayerType;
 import traintracks.api.Turn;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,13 +21,14 @@ public class TTGame implements Game {
         this.board = board;
         this.history = new ArrayList<Turn>();
         initializePlayers();
-
     }
 
     public List<Player> getPlayers() { return this.players; }
     public Board getBoard() { return this.board; }
     public List<Turn> getTurnHistory() { return this.history; }
+    public boolean over() { return false; } // TODO fixme
     public String toString() { return this.getBoard().getName(); }
+    public String toDisplayString() { return this.getBoard().getName(); } // TODO fixme
 
     private void initializePlayers() {
         for (Player player : this.players) {
@@ -45,15 +43,23 @@ public class TTGame implements Game {
     }
 
     public void applyTurn(Turn turn) {
-        // TODO implement
+        switch (turn.getType()) {
+            case DISCARD_TICKET:
+                break;
+            case BUILD_LINE:
+                TTBuildRouteTurn routeTurn = (TTBuildRouteTurn) turn;
+                break;
+            case DRAW_TRAIN_CAR:
+                TTDrawCarTurn carTurn = (TTDrawCarTurn) turn;
+                carTurn.getPlayer().getState().getCars().add(this.board.getBoardState().drawCar(carTurn.getIndex()));
+                break;
+            case DRAW_TICKETS:
+                for (int i = 0; i < 3; ++i) {
+                    turn.getPlayer().getState().addPendingTicket(board.getTicketDeck().drawCard());
+                }
+                break;
+        }
+        System.out.println(turn);
     }
 
-    public static void main(String[] argv) {
-        Player player1 = new TTPlayer("muish", Color.BLUE, PlayerType.HUMAN);
-        Player player2 = new TTPlayer("dantrayal", Color.BLACK, PlayerType.HUMAN);
-        Board board = TTBoard.getTTBoard(TTSetup.NORTH_AMERICA, player1);
-        List<Player> players = ImmutableList.of(player1, player2);
-        Game game = new TTGame(players, board);
-        System.out.println(game.toString());
-    }
 }
