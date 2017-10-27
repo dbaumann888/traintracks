@@ -5,6 +5,6 @@ import java.util.List;
 public interface Deck<T> {
     List<T> getCards();
     T drawCard();
-    void addCard(T card);
+    void addCardToBottom(T card);
     void shuffle();
 }

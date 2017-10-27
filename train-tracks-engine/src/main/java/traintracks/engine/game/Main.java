@@ -8,6 +8,7 @@ import traintracks.api.Game;
 import traintracks.api.Player;
 import traintracks.api.PlayerType;
 import traintracks.api.Route;
+import traintracks.api.Ticket;
 import traintracks.api.Turn;
 import traintracks.api.TurnType;
 
@@ -33,27 +34,54 @@ public class Main {
 
     private static Turn readTurn(Scanner keyboard, Board board) {
         while (true) {
-            System.out.println("Choose a turn: (b)uild a route, (d)raw a car, (t)ake tickets: ");
-            String turnTypeChar = keyboard.next();
+            System.out.println("- - - - - - - - - - - - - - - - - -");
+            System.out.println("Active player: " + board.getBoardState().getActivePlayer());
+            if (board.getBoardState().getActivePlayer().getState().hasPendingTickets()) {
+                Ticket ticket = readDiscardTicket(keyboard, board);
+                if (ticket != null) {
+                    board.getBoardState().getActivePlayer().getState().discardPendingTicket(ticket);
+                    board.getBoardState().getTicketDrawDeck().addCardToBottom(ticket);
+                }
+                if ((ticket == null) || (board.getBoardState().getActivePlayer().getState().getPendingTickets().size()) == 1) {
+                    board.getBoardState().getActivePlayer().getState().keepPendingTickets();
+                }
+            } else {
+                System.out.println("Choose a turn: (b)uild a route, (d)raw a car, (t)ake tickets: ");
+                String turnTypeChar = keyboard.next();
 
-            switch (turnTypeChar.charAt(0)) {
-                case 'b':
-                    Route route = readRoute(keyboard, board);
-                    Flavor flavor = route.getFlavor();
-                    if (flavor == Flavor.RAINBOW) {
-                        flavor = readFlavor(keyboard);
-                    }
-                    return new TTBuildRouteTurn(board.getBoardState().getActivePlayer(), route, flavor);
-                case 'd':
-                    int index = readIndex(keyboard, board);
-                    return new TTDrawCarTurn(board.getBoardState().getActivePlayer(), index);
-                case 't':
-                    return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.DRAW_TICKETS);
+                switch (turnTypeChar.charAt(0)) {
+                    case 'b':
+                        Route route = readRoute(keyboard, board);
+                        Flavor flavor = route.getFlavor();
+                        if (flavor == Flavor.RAINBOW) {
+                            flavor = readFlavor(keyboard);
+                        }
+                        return new TTBuildRouteTurn(board.getBoardState().getActivePlayer(), route, flavor);
+                    case 'd':
+                        int index = readIndex(keyboard, board);
+                        return new TTDrawCarTurn(board.getBoardState().getActivePlayer(), index);
+                    case 't':
+                        return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.DRAW_TICKETS);
+                }
+
+                return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.BUILD_LINE);
             }
-
-            return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.BUILD_LINE);
         }
     }
+
+    private static Ticket readDiscardTicket(Scanner keyboard, Board board) {
+        System.out.println("Choose a ticket to discard: (0) none, ");
+        String ticketIndex = keyboard.next();
+        int index = ticketIndex.charAt(0) - '0' - 1;
+        if (index == -1) {
+            return null;
+        } else {
+            // TODO handle out of bounds situation
+            return board.getBoardState().getActivePlayer().getState().getPendingTickets().get(index);
+        }
+    }
+
+
 
     private static Route readRoute(Scanner keyboard, Board board) {
         int[] i = {0};

@@ -20,7 +20,7 @@ public class TTDeck<T> implements Deck<T> {
         return this.cards.remove(0);
     }
 
-    public void addCard(T card) {
+    public void addCardToBottom(T card) {
         this.cards.add(card);
     }
 

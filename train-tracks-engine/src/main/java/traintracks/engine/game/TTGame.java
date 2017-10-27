@@ -42,23 +42,34 @@ public class TTGame implements Game {
         }
     }
 
+    private void nextPlayer() {
+        int index = this.players.indexOf(this.board.getBoardState().getActivePlayer());
+        int nextIndex = (index + 1) % this.players.size();
+        this.board.getBoardState().setActivePlayer(this.players.get(nextIndex));
+    }
     public void applyTurn(Turn turn) {
         switch (turn.getType()) {
-            case DISCARD_TICKET:
+            case DISCARD_PENDING_TICKETS:
                 break;
             case BUILD_LINE:
                 TTBuildRouteTurn routeTurn = (TTBuildRouteTurn) turn;
+                nextPlayer();
                 break;
             case DRAW_TRAIN_CAR:
                 TTDrawCarTurn carTurn = (TTDrawCarTurn) turn;
                 carTurn.getPlayer().getState().getCars().add(this.board.getBoardState().drawCar(carTurn.getIndex()));
+                if (!carTurn.getPlayer().getState().mustDrawSecondCar()) {
+                    nextPlayer();
+                }
                 break;
             case DRAW_TICKETS:
                 for (int i = 0; i < 3; ++i) {
                     turn.getPlayer().getState().addPendingTicket(board.getTicketDeck().drawCard());
                 }
+                nextPlayer();
                 break;
         }
+
         System.out.println(turn);
     }
 
