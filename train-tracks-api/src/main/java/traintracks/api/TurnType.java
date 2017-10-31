@@ -1,7 +1,7 @@
 package traintracks.api;
 
 public enum TurnType {
-    BUILD_LINE,
+    BUILD_ROUTE,
     DRAW_TRAIN_CAR,
     DRAW_TICKETS,
     BUILD_STATION,

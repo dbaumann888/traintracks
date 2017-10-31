@@ -46,10 +46,16 @@ public class Main {
                     board.getBoardState().getActivePlayer().getState().keepPendingTickets();
                 }
             } else {
-                System.out.println("Choose a turn: (b)uild a route, (d)raw a car, (t)ake tickets: ");
-                String turnTypeChar = keyboard.next();
+                char actionChar;
+                if (board.getBoardState().getActivePlayer().getState().mustDrawSecondCar()) {
+                    actionChar = 'd';
+                } else {
+                    System.out.println("Choose a turn: (b)uild a route, (d)raw a car, (t)ake tickets: ");
+                    String turnTypeChar = keyboard.next();
+                    actionChar = turnTypeChar.charAt(0);
+                }
 
-                switch (turnTypeChar.charAt(0)) {
+                switch (actionChar) {
                     case 'b':
                         Route route = readRoute(keyboard, board);
                         Flavor flavor = route.getFlavor();
@@ -58,13 +64,13 @@ public class Main {
                         }
                         return new TTBuildRouteTurn(board.getBoardState().getActivePlayer(), route, flavor);
                     case 'd':
-                        int index = readIndex(keyboard, board);
+                        int index = readCarDrawIndex(keyboard, board);
                         return new TTDrawCarTurn(board.getBoardState().getActivePlayer(), index);
                     case 't':
                         return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.DRAW_TICKETS);
                 }
 
-                return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.BUILD_LINE);
+                return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.BUILD_ROUTE);
             }
         }
     }
@@ -111,13 +117,18 @@ public class Main {
         }
     }
 
-    private static int readIndex(Scanner keyboard, Board board) {
+    private static int readCarDrawIndex(Scanner keyboard, Board board) {
         while (true) {
             StringBuffer sb = new StringBuffer();
             sb.append("Choose a card: ");
             List<Car> cars = board.getBoardState().getOpenCards().getCards();
             for (int i = 0; i < cars.size(); ++i) {
-                sb.append("(").append(i).append(")" ).append(cars.get(i)).append(" ");
+                char displayIndex = (char)('0' + i);
+                Flavor flavor = cars.get(i).getFlavor();
+                if ((flavor == Flavor.RAINBOW) && (board.getBoardState().getActivePlayer().getState().mustDrawSecondCar())) {
+                    displayIndex = 'X';
+                }
+                sb.append("(").append(displayIndex).append(")" ).append(cars.get(i)).append(" ");
             }
             sb.append("(").append(cars.size()).append(")deck: ");
             System.out.println(sb.toString());

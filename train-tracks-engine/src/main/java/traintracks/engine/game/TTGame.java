@@ -51,8 +51,8 @@ public class TTGame implements Game {
         switch (turn.getType()) {
             case DISCARD_PENDING_TICKETS:
                 break;
-            case BUILD_LINE:
-                TTBuildRouteTurn routeTurn = (TTBuildRouteTurn) turn;
+            case BUILD_ROUTE:
+                TTBuildRouteTurn routeTurn = (TTBuildRouteTurn)turn;
                 nextPlayer();
                 break;
             case DRAW_TRAIN_CAR:

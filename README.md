@@ -1,7 +1,8 @@
 # traintracks
 
 # TODO
-on second draw only show draw choices
+handle exceptions at UI level
+create a new exception class to surface user errors
 build a route needs to check cars and turn in cars
 decide which cars to use to build a route
 remove carriages when building a route

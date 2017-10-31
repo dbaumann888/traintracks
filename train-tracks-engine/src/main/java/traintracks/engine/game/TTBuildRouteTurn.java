@@ -11,7 +11,7 @@ public class TTBuildRouteTurn extends TTTurn implements BuildRouteTurn {
     private Flavor flavor;
 
     public TTBuildRouteTurn(Player player, Route route, Flavor flavor) {
-        super(player, TurnType.BUILD_LINE);
+        super(player, TurnType.BUILD_ROUTE);
         this.route = route;
         this.flavor = flavor;
     }
