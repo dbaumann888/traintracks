@@ -11,13 +11,13 @@
     {"name": "Raleigh", "coordinates": {"x": 1000, "y": 800}}
   ],
   "routes": [
-    {"stationA": "Vancouver", "stationB": "San Francisco", "type": "standard", "length": 5, "flavor": "lime", "numEngines": 0},
-    {"stationA": "Denver", "stationB": "San Francisco", "type": "standard", "length": 6, "flavor": "lemon", "numEngines": 0},
-    {"stationA": "Vancouver", "stationB": "Denver", "type": "standard", "length": 8, "flavor": "rainbow", "numEngines": 0},
-    {"stationA": "Denver", "stationB": "Pittsburgh", "type": "standard", "length": 8, "flavor": "strawberry", "numEngines": 0},
-    {"stationA": "Denver", "stationB": "New York City", "type": "standard", "length": 8, "flavor": "lime", "numEngines": 0},
-    {"stationA": "Denver", "stationB": "Miami", "type": "standard", "length": 8, "flavor": "licorice", "numEngines": 0},
-    {"stationA": "Denver", "stationB": "Raleigh", "type": "standard", "length": 8, "flavor": "vanilla", "numEngines": 0}
+    {"stationA": "Vancouver", "stationB": "San Francisco", "type": "standard", "length": 4, "flavor": "lime", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "San Francisco", "type": "standard", "length": 3, "flavor": "lemon", "numEngines": 0},
+    {"stationA": "Vancouver", "stationB": "Denver", "type": "standard", "length": 2, "flavor": "rainbow", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "Pittsburgh", "type": "standard", "length": 3, "flavor": "strawberry", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "New York City", "type": "standard", "length": 5, "flavor": "lime", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "Miami", "type": "standard", "length": 3, "flavor": "licorice", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "Raleigh", "type": "standard", "length": 3, "flavor": "vanilla", "numEngines": 0}
   ],
   "ticketDeck": [
     {"stationA": "Vancouver", "stationB": "San Francisco", "score": 5},

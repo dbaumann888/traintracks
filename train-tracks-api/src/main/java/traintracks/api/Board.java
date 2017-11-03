@@ -10,7 +10,7 @@ public interface Board {
     Map<String, Station> getStations();
     RouteMap getRouteMap();
     BoardState getBoardState();
-    Deck<Car> getCarDeck();
-    Deck<Ticket> getTicketDeck();
+    Deck<Car> getCarDeck(); // TODO make a copy of static cards for here
+    Deck<Ticket> getTicketDeck(); // TODO make a copy of static cards for here
     RouteScoring getRouteScoring();
 }

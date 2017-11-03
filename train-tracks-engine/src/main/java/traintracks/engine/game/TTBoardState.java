@@ -18,7 +18,6 @@ public class TTBoardState implements BoardState {
     private List<CompletedRoute> completedRoutes;
     private Deck<Car> carDrawDeck;
     private OpenCards<Car> openCars;
-    private Deck<Car> carDiscardDeck;
     private Deck<Ticket> ticketDrawDeck;
 
     public TTBoardState(Player startingPlayer, Deck<Car> fullCarDeck, Deck<Ticket> fullTicketDeck) {
@@ -31,7 +30,6 @@ public class TTBoardState implements BoardState {
             initialCards.add(this.carDrawDeck.drawCard());
         }
         this.openCars = new TTOpenCards<Car>(initialCards);
-        this.carDiscardDeck = new TTDeck<>(ImmutableList.of());
         this.ticketDrawDeck = fullTicketDeck;
         this.ticketDrawDeck.shuffle();
     }

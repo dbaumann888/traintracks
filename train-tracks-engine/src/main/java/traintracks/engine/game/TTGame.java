@@ -1,6 +1,10 @@
 package traintracks.engine.game;
 
 import traintracks.api.Board;
+import traintracks.api.BuildRouteTurn;
+import traintracks.api.Car;
+import traintracks.api.CompletedRoute;
+import traintracks.api.DrawCarTurn;
 import traintracks.api.Game;
 import traintracks.api.Player;
 import traintracks.api.Turn;
@@ -50,27 +54,48 @@ public class TTGame implements Game {
     public void applyTurn(Turn turn) {
         switch (turn.getType()) {
             case DISCARD_PENDING_TICKETS:
+                applyTurnDiscardPendingTickets(turn);
                 break;
             case BUILD_ROUTE:
-                TTBuildRouteTurn routeTurn = (TTBuildRouteTurn)turn;
-                nextPlayer();
+                applyTurnBuildRoute((BuildRouteTurn)turn);
                 break;
             case DRAW_TRAIN_CAR:
-                TTDrawCarTurn carTurn = (TTDrawCarTurn) turn;
-                carTurn.getPlayer().getState().getCars().add(this.board.getBoardState().drawCar(carTurn.getIndex()));
-                if (!carTurn.getPlayer().getState().mustDrawSecondCar()) {
-                    nextPlayer();
-                }
+                applyTurnDrawTrainCar((DrawCarTurn)turn);
                 break;
             case DRAW_TICKETS:
-                for (int i = 0; i < 3; ++i) {
-                    turn.getPlayer().getState().addPendingTicket(board.getTicketDeck().drawCard());
-                }
-                nextPlayer();
+                applyTurnDrawTickets(turn);
                 break;
         }
 
         System.out.println(turn);
     }
 
+    private void applyTurnDiscardPendingTickets(Turn turn) {
+        // TODO implement discard tickets
+    }
+
+    private void applyTurnBuildRoute(BuildRouteTurn routeTurn) {
+        Player player = routeTurn.getPlayer();
+        for (Car car : routeTurn.getCars()) {
+            player.getState().getCars().remove(car);
+            this.board.getBoardState().getCarDrawDeck().addCardToDiscards(car);
+        }
+        CompletedRoute completedRoute = new TTCompletedRoute(routeTurn.getRoute(), player);
+        this.board.getBoardState().getCompletedRoutes().add(completedRoute);
+        player.getState().setCarriageCount(player.getState().getCarriageCount() - routeTurn.getRoute().getLength());
+        nextPlayer();
+    }
+    private void applyTurnDrawTrainCar(DrawCarTurn carTurn) {
+        carTurn.getPlayer().getState().getCars().add(this.board.getBoardState().drawCar(carTurn.getIndex()));
+        if (!carTurn.getPlayer().getState().mustDrawSecondCar()) {
+            nextPlayer();
+        }
+    }
+
+    private void applyTurnDrawTickets(Turn turn) {
+        for (int i = 0; i < 3; ++i) {
+            turn.getPlayer().getState().addPendingTicket(board.getTicketDeck().drawCard());
+        }
+        nextPlayer();
+    }
 }

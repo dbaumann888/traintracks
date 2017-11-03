@@ -13,6 +13,7 @@ import traintracks.api.Turn;
 import traintracks.api.TurnType;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,6 +37,7 @@ public class Main {
         while (true) {
             System.out.println("- - - - - - - - - - - - - - - - - -");
             System.out.println("Active player: " + board.getBoardState().getActivePlayer());
+            displayCars(board.getBoardState().getActivePlayer().getState().getCars());
             if (board.getBoardState().getActivePlayer().getState().hasPendingTickets()) {
                 Ticket ticket = readDiscardTicket(keyboard, board);
                 if (ticket != null) {
@@ -58,11 +60,9 @@ public class Main {
                 switch (actionChar) {
                     case 'b':
                         Route route = readRoute(keyboard, board);
-                        Flavor flavor = route.getFlavor();
-                        if (flavor == Flavor.RAINBOW) {
-                            flavor = readFlavor(keyboard);
-                        }
-                        return new TTBuildRouteTurn(board.getBoardState().getActivePlayer(), route, flavor);
+                        // TODO shortcut if player doesn't have any rainbow cars
+                        List<Car> cars = readCars(keyboard, route, board);
+                        return new TTBuildRouteTurn(board.getBoardState().getActivePlayer(), route, cars);
                     case 'd':
                         int index = readCarDrawIndex(keyboard, board);
                         return new TTDrawCarTurn(board.getBoardState().getActivePlayer(), index);
@@ -87,25 +87,77 @@ public class Main {
         }
     }
 
-
-
     private static Route readRoute(Scanner keyboard, Board board) {
         int[] i = {0};
         StringBuffer sb = new StringBuffer();
-        sb.append("Choose a route: ");
-        board.getRouteMap().getRoutes().forEach((route) -> {sb.append("(").append(i[0]).append(") ").append(route.toString()); i[0] = i[0] + 1;});
+        sb.append("Choose a route:");
+        board.getRouteMap().getRoutes().forEach((route) -> {sb.append(" (").append(i[0]).append(")").append(route.toString()); i[0] = i[0] + 1;});
         System.out.println(sb.toString());
         String routeIndex = keyboard.next();
 
         return board.getRouteMap().getRoutes().get(routeIndex.charAt(0) - '0');
     }
 
+    private static List<Car> readCars(Scanner keyboard, Route route, Board board) {
+        Flavor chosenFlavor = route.getFlavor();
+        if (chosenFlavor == Flavor.RAINBOW) {
+            chosenFlavor = readFlavor(keyboard);
+        }
+        final Flavor finalFlavor = chosenFlavor;
+        List<Car> cars = board.getBoardState().getActivePlayer().getState().getCars();
+        long numFlavorCars = cars.stream().filter(car -> car.getFlavor() == finalFlavor).count();
+        long numRainbows = cars.stream().filter(car -> car.getFlavor() == Flavor.RAINBOW).count();
+        long numRainbowsToUse = readNumRainbowsToUse(keyboard, chosenFlavor, route, numFlavorCars, numRainbows);
+
+        long numFlavorCarsLeft = route.getLength() - numRainbowsToUse;
+        long numRainbowCarsLeft = numRainbowsToUse;
+        List<Car> chosenCars = new ArrayList<>();
+        for (Car car : cars) {
+            if ((numFlavorCarsLeft > 0) && (car.getFlavor() == chosenFlavor)) {
+                chosenCars.add(car);
+                numFlavorCarsLeft -= 1;
+            } else if ((numRainbowCarsLeft > 0) && (car.getFlavor() == Flavor.RAINBOW)) {
+                chosenCars.add(car);
+                numRainbowCarsLeft -= 1;
+            }
+        }
+        return chosenCars;
+    }
+
+    private static long readNumRainbowsToUse(Scanner keyboard, Flavor flavor, Route route,
+                                            long numFlavorCars, long numRainbows)
+    {
+        long minRainbows = Math.max(route.getNumEngines(), route.getLength() - numFlavorCars);
+        long maxRainbows = Math.min(route.getLength(), numRainbows);
+        if (minRainbows > maxRainbows) {
+            // TODO throw a different exception
+            throw new RuntimeException("You can't build that route!");
+        }
+        if ((numRainbows == 0) || (flavor == Flavor.RAINBOW)) {
+            return 0;
+        }
+        while (true) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("You have " + numFlavorCars + " " + flavor.toString() + " cars and");
+            sb.append(" " + numRainbows + " " + Flavor.RAINBOW.toString() + " cars.\n");
+            sb.append("Choose the number of rainbows cars to use [" + minRainbows + " - " + maxRainbows + "]:");
+            System.out.println(sb.toString());
+            String numRainbowsChar = keyboard.next();
+            long numRainbowsChosen = Long.parseLong(numRainbowsChar);
+            if ((numRainbowsChosen >= minRainbows) && (numRainbowsChosen <= maxRainbows)) {
+                return numRainbowsChosen;
+            } else {
+                System.out.println("invalid choice");
+            }
+        }
+    }
+
     private static Flavor readFlavor(Scanner keyboard) {
         while (true) {
             StringBuffer sb = new StringBuffer();
-            sb.append("Choose a flavor of route: ");
+            sb.append("Choose a flavor of route:");
             for (Flavor flavor : Flavor.values()) {
-                sb.append("(").append(flavor.getSymbol()).append(") ").append(flavor.toString());
+                sb.append(" (").append(flavor.getSymbol()).append(")").append(flavor.toString());
             }
             System.out.println(sb.toString());
             String flavorChar = keyboard.next();
@@ -143,6 +195,10 @@ public class Main {
                 return index;
             }
         }
+    }
+
+    private static void displayCars(List<Car> cars) {
+        System.out.println(cars.toString());
     }
 
 }
