@@ -25,7 +25,9 @@ public class TTDeck<T> implements Deck<T> {
 
     public T drawCard() {
         if (this.cards.isEmpty()) {
-            // TODO handle case where discards is also empty
+            if (this.discards.isEmpty()) {
+                return null;
+            }
             this.cards.addAll(this.discards);
             this.discards.clear();
             shuffle();

@@ -29,17 +29,16 @@
     {"stationA": "Miami", "stationB": "Raleigh", "score": 18},
     {"stationA": "Miami", "stationB": "San Francisco", "score": 22},
     {"stationA": "New York City", "stationB": "San Francisco", "score": 17}
-
   ],
   "carDeck": [
-    {"flavor": "lime", "count": 10},
-    {"flavor": "lemon", "count": 10},
-    {"flavor": "orange", "count": 10},
-    {"flavor": "cherry", "count": 10},
-    {"flavor": "strawberry", "count": 10},
-    {"flavor": "blueberry", "count": 10},
-    {"flavor": "vanilla", "count": 10},
-    {"flavor": "licorice", "count": 10},
+    {"flavor": "lime", "count": 1},
+    {"flavor": "lemon", "count": 1},
+    {"flavor": "orange", "count": 1},
+    {"flavor": "cherry", "count": 1},
+    {"flavor": "strawberry", "count": 1},
+    {"flavor": "blueberry", "count": 1},
+    {"flavor": "vanilla", "count": 1},
+    {"flavor": "licorice", "count": 1},
     {"flavor": "rainbow", "count": 10}
   ],
   "routeScoring": [

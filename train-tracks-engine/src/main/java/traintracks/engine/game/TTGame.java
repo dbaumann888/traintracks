@@ -60,7 +60,7 @@ public class TTGame implements Game {
                 applyTurnBuildRoute((BuildRouteTurn)turn);
                 break;
             case DRAW_TRAIN_CAR:
-                applyTurnDrawTrainCar((DrawCarTurn)turn);
+                applyTurnDrawCar((DrawCarTurn)turn);
                 break;
             case DRAW_TICKETS:
                 applyTurnDrawTickets(turn);
@@ -85,7 +85,7 @@ public class TTGame implements Game {
         player.getState().setCarriageCount(player.getState().getCarriageCount() - routeTurn.getRoute().getLength());
         nextPlayer();
     }
-    private void applyTurnDrawTrainCar(DrawCarTurn carTurn) {
+    private void applyTurnDrawCar(DrawCarTurn carTurn) {
         carTurn.getPlayer().getState().getCars().add(this.board.getBoardState().drawCar(carTurn.getIndex()));
         if (!carTurn.getPlayer().getState().mustDrawSecondCar()) {
             nextPlayer();
@@ -93,7 +93,8 @@ public class TTGame implements Game {
     }
 
     private void applyTurnDrawTickets(Turn turn) {
-        for (int i = 0; i < 3; ++i) {
+        int numRemainingTickets = board.getTicketDeck().getCards().size();
+        for (int i = 0; i < Math.min(3, numRemainingTickets); ++i) {
             turn.getPlayer().getState().addPendingTicket(board.getTicketDeck().drawCard());
         }
         nextPlayer();

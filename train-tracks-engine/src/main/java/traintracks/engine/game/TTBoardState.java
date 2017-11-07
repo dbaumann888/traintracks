@@ -1,6 +1,5 @@
 package traintracks.engine.game;
 
-import com.google.common.collect.ImmutableList;
 import traintracks.api.BoardState;
 import traintracks.api.Car;
 import traintracks.api.CompletedRoute;
@@ -25,22 +24,35 @@ public class TTBoardState implements BoardState {
         this.completedRoutes = new ArrayList<>();
         this.carDrawDeck = fullCarDeck;
         this.carDrawDeck.shuffle();
-        List<Car> initialCards = new ArrayList<>();
-        for (int i = 0; i < 5; ++i) {
-            initialCards.add(this.carDrawDeck.drawCard());
-        }
-        this.openCars = new TTOpenCards<Car>(initialCards);
+        this.openCars = new TTOpenCards<Car>(Car.class, 5);
+        fillOpenCars();
         this.ticketDrawDeck = fullTicketDeck;
         this.ticketDrawDeck.shuffle();
     }
 
-    public Player getActivePlayer() { return this.activePlayer; }
-    public void setActivePlayer(Player nextPlayer) { this.activePlayer = nextPlayer; }
-    public List<CompletedRoute> getCompletedRoutes() { return this.completedRoutes; }
-    public Deck<Car> getCarDrawDeck() { return this.carDrawDeck; }
-    public OpenCards<Car> getOpenCards() { return this.openCars; }
+    public Player getActivePlayer() {
+        return this.activePlayer;
+    }
+
+    public void setActivePlayer(Player nextPlayer) {
+        this.activePlayer = nextPlayer;
+    }
+
+    public List<CompletedRoute> getCompletedRoutes() {
+        return this.completedRoutes;
+    }
+
+    public Deck<Car> getCarDrawDeck() {
+        return this.carDrawDeck;
+    }
+
+    public OpenCards<Car> getOpenCards() {
+        return this.openCars;
+    }
+
     public Car drawCar(int index) {
         if (index == -1) {
+            // TODO only allow this if there are cars in the deck
             this.activePlayer.getState().setMustDrawSecondCar(!this.activePlayer.getState().mustDrawSecondCar());
             return this.carDrawDeck.drawCard();
         } else {
@@ -57,9 +69,50 @@ public class TTBoardState implements BoardState {
                 // TODO deal with error condition where drawing rainbow on second card
                 this.activePlayer.getState().setMustDrawSecondCar(false);
             }
-            return this.openCars.retrieveCard(index, this.carDrawDeck.drawCard());
+            drawnCar = this.openCars.retrieveCard(index, this.carDrawDeck.drawCard());
+            shuffleOpenCarsIf3Rainbows();
+            return drawnCar;
         }
     }
-    public Deck<Ticket> getTicketDrawDeck() { return this.ticketDrawDeck; }
-    public String toString() { return "board state"; }
+
+    public Deck<Ticket> getTicketDrawDeck() {
+        return this.ticketDrawDeck;
+    }
+
+    public String toString() {
+        return "board state";
+    }
+
+    private void fillOpenCars() {
+        List<Car> initialCards = new ArrayList<>();
+        for (int i = 0; i < 5; ++i) {
+            Car drawnCar = this.carDrawDeck.drawCard();
+            if (drawnCar != null) {
+                initialCards.add(drawnCar);
+            }
+        }
+        this.openCars.setCards(initialCards);
+        shuffleOpenCarsIf3Rainbows();
+    }
+
+    private void shuffleOpenCarsIf3Rainbows() {
+        long numOpenRainbows = this.openCars.getCards().stream().filter(car -> car.getFlavor() == Flavor.RAINBOW).count();
+        if (numOpenRainbows >= 3) {
+            for (Car car : this.openCars.getCards()) {
+                this.carDrawDeck.addCardToDiscards(car);
+            }
+            this.openCars.clear();
+        }
+        long numNonRainbows = getNumNonRainbowCarsInCarDeck();
+        if (numNonRainbows >= 3) {
+            fillOpenCars();
+        } else {
+            // TODO flag that we are horked?
+        }
+    }
+
+    private long getNumNonRainbowCarsInCarDeck() {
+        return this.getCarDrawDeck().getCards().stream().filter(car -> car.getFlavor() != Flavor.RAINBOW).count() +
+                this.getCarDrawDeck().getDiscards().stream().filter(car -> car.getFlavor() != Flavor.RAINBOW).count();
+    }
 }

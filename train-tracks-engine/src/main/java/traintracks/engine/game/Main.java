@@ -27,8 +27,13 @@ public class Main {
         Game game = new TTGame(players, board);
         Scanner keyboard = new Scanner(System.in);
         while (!game.over()) {
-            Turn turn = readTurn(keyboard, board);
-            game.applyTurn(turn);
+            try {
+                Turn turn = readTurn(keyboard, board);
+                game.applyTurn(turn);
+            } catch (Exception e) {
+                System.out.println("Uh oh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.out.println("Exception: " + e.getMessage());
+            }
             System.out.println(game.toDisplayString());
         }
     }
@@ -39,20 +44,26 @@ public class Main {
             System.out.println("Active player: " + board.getBoardState().getActivePlayer());
             displayCars(board.getBoardState().getActivePlayer().getState().getCars());
             if (board.getBoardState().getActivePlayer().getState().hasPendingTickets()) {
-                Ticket ticket = readDiscardTicket(keyboard, board);
-                if (ticket != null) {
-                    board.getBoardState().getActivePlayer().getState().discardPendingTicket(ticket);
-                    board.getBoardState().getTicketDrawDeck().addCardToBottom(ticket);
-                }
-                if ((ticket == null) || (board.getBoardState().getActivePlayer().getState().getPendingTickets().size()) == 1) {
+                if ((board.getBoardState().getActivePlayer().getState().getPendingTickets().size()) == 1) {
                     board.getBoardState().getActivePlayer().getState().keepPendingTickets();
+                } else {
+                    Ticket ticket = readDiscardTicket(keyboard, board);
+                    if (ticket != null) {
+                        board.getBoardState().getActivePlayer().getState().discardPendingTicket(ticket);
+                        board.getBoardState().getTicketDrawDeck().addCardToBottom(ticket);
+                    }
+                    if ((ticket == null) || (board.getBoardState().getActivePlayer().getState().getPendingTickets().size()) == 1) {
+                        board.getBoardState().getActivePlayer().getState().keepPendingTickets();
+                    }
                 }
             } else {
+                int numRemainingTickets = board.getTicketDeck().getCards().size();
                 char actionChar;
                 if (board.getBoardState().getActivePlayer().getState().mustDrawSecondCar()) {
                     actionChar = 'd';
                 } else {
-                    System.out.println("Choose a turn: (b)uild a route, (d)raw a car, (t)ake tickets: ");
+                    String takeTicketsOption = numRemainingTickets >= 3 ? ", (t)ake tickets" : numRemainingTickets == 0 ? "" : ", (t)ake tickets but only " + numRemainingTickets + " left!";
+                    System.out.println("Choose a turn: (b)uild a route, (d)raw a car" + takeTicketsOption + ": ");
                     String turnTypeChar = keyboard.next();
                     actionChar = turnTypeChar.charAt(0);
                 }
@@ -67,23 +78,31 @@ public class Main {
                         int index = readCarDrawIndex(keyboard, board);
                         return new TTDrawCarTurn(board.getBoardState().getActivePlayer(), index);
                     case 't':
-                        return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.DRAW_TICKETS);
+                        if (numRemainingTickets > 0) {
+                            return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.DRAW_TICKETS);
+                        }
                 }
-
-                return new TTTurn(board.getBoardState().getActivePlayer(), TurnType.BUILD_ROUTE);
             }
         }
     }
 
     private static Ticket readDiscardTicket(Scanner keyboard, Board board) {
-        System.out.println("Choose a ticket to discard: (0) none, ");
-        String ticketIndex = keyboard.next();
-        int index = ticketIndex.charAt(0) - '0' - 1;
-        if (index == -1) {
-            return null;
-        } else {
-            // TODO handle out of bounds situation
-            return board.getBoardState().getActivePlayer().getState().getPendingTickets().get(index);
+        List<Ticket> pendingTickets = board.getBoardState().getActivePlayer().getState().getPendingTickets();
+        while (true) {
+            StringBuffer sb = new StringBuffer("Choose a ticket to discard: (0) none");
+            for (int i = 0; i < pendingTickets.size(); ++i) {
+                sb.append(", (").append(i + 1).append(") ").append(pendingTickets.get(i).toString());
+            }
+            System.out.println(sb.toString());
+            String ticketIndex = keyboard.next();
+            int index = ticketIndex.charAt(0) - '0' - 1;
+            if (index == -1) {
+                return null;
+            } else if ((index >= 0) && (index < pendingTickets.size())) {
+                return pendingTickets.get(index);
+            } else {
+                System.out.println("try again");
+            }
         }
     }
 
