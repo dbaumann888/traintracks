@@ -1,10 +1,12 @@
 package traintracks.engine.game;
 
 import com.google.common.collect.ImmutableList;
+import sun.java2d.xr.MutableInteger;
 import traintracks.api.Board;
 import traintracks.api.Car;
 import traintracks.api.Flavor;
 import traintracks.api.Game;
+import traintracks.api.OpenCards;
 import traintracks.api.Player;
 import traintracks.api.PlayerType;
 import traintracks.api.Route;
@@ -13,9 +15,12 @@ import traintracks.api.Turn;
 import traintracks.api.TurnType;
 
 import java.awt.Color;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] argv) {
@@ -33,6 +38,11 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Uh oh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("Exception: " + e.getMessage());
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                String sStackTrace = sw.toString(); // stack trace as a string
+                System.out.println(sStackTrace);
             }
             System.out.println(game.toDisplayString());
         }
@@ -107,14 +117,18 @@ public class Main {
     }
 
     private static Route readRoute(Scanner keyboard, Board board) {
-        int[] i = {0};
+        final MutableInteger i = new MutableInteger(0);
         StringBuffer sb = new StringBuffer();
         sb.append("Choose a route:");
-        board.getRouteMap().getRoutes().forEach((route) -> {sb.append(" (").append(i[0]).append(")").append(route.toString()); i[0] = i[0] + 1;});
+        List<Route> uncompletedRoutes = board.getRouteMap().getRoutes()
+                .stream()
+                .filter(route -> !board.getBoardState().completedRoutesContainsRoute(route)).collect(Collectors.toList());
+        uncompletedRoutes.forEach((route) -> { sb.append(" (").append(i.getValue()).append(")").append(route.toString());
+                    i.setValue(i.getValue() + 1); });
         System.out.println(sb.toString());
         String routeIndex = keyboard.next();
 
-        return board.getRouteMap().getRoutes().get(routeIndex.charAt(0) - '0');
+        return uncompletedRoutes.get(routeIndex.charAt(0) - '0');
     }
 
     private static List<Car> readCars(Scanner keyboard, Route route, Board board) {
@@ -192,16 +206,18 @@ public class Main {
         while (true) {
             StringBuffer sb = new StringBuffer();
             sb.append("Choose a card: ");
-            List<Car> cars = board.getBoardState().getOpenCards().getCards();
+            OpenCards openCards = board.getBoardState().getOpenCards();
+            List<Car> cars = openCards.getCards();
             for (int i = 0; i < cars.size(); ++i) {
                 char displayIndex = (char)('0' + i);
-                Flavor flavor = cars.get(i).getFlavor();
-                if ((flavor == Flavor.RAINBOW) && (board.getBoardState().getActivePlayer().getState().mustDrawSecondCar())) {
+                Car car = cars.get(i);
+                if ((car != null) && (car.getFlavor() == Flavor.RAINBOW) && (board.getBoardState().getActivePlayer().getState().mustDrawSecondCar())) {
                     displayIndex = 'X';
                 }
-                sb.append("(").append(displayIndex).append(")" ).append(cars.get(i)).append(" ");
+                sb.append("(").append(displayIndex).append(")" ).append(car).append(" ");
             }
-            sb.append("(").append(cars.size()).append(")deck: ");
+            String deckString = board.getCarDeck().isEmpty() ? "deck(empty)" : "deck";
+            sb.append("(").append(cars.size()).append(")").append(deckString).append(": ");
             System.out.println(sb.toString());
             String indexChar = keyboard.next();
 

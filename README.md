@@ -1,20 +1,14 @@
 # traintracks
 
 # TODO
-IN PROGRESS
-+ 3 rainbows in open cars causes reshuffle
-+ handle only 2 non-rainbows in remaining car cards
-+ handle car cards running out
+maybe don't show routes that you don't have the cards to build
+could show numbers of cars in hand grouped by flavor
+could show open cars before deciding what action to take in the turn
+could show buildable routes
 
-bug:
-Active player: muish
-[rainbow, blueberry, licorice, rainbow]
-Uh oh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-Exception: null
-Train Tracks Across North America
+create containing class for car draw deck and open cars (aka car zone) 
 
-fix me after bug fix:
-reset flavor counts back to 10
+don't allow building routes if no routes left to build
 
 compute scores
 create a new exception class to surface user errors

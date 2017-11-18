@@ -7,6 +7,7 @@ import traintracks.api.CompletedRoute;
 import traintracks.api.DrawCarTurn;
 import traintracks.api.Game;
 import traintracks.api.Player;
+import traintracks.api.Route;
 import traintracks.api.Turn;
 
 import java.util.ArrayList;
@@ -76,9 +77,19 @@ public class TTGame implements Game {
 
     private void applyTurnBuildRoute(BuildRouteTurn routeTurn) {
         Player player = routeTurn.getPlayer();
+        Route route = routeTurn.getRoute();
+        if (this.board.getBoardState().completedRoutesContainsRoute(routeTurn.getRoute())) {
+            throw new RuntimeException("The route " + route + " has already been completed");
+        }
+
+        for (Car car : routeTurn.getCars()) {
+            if (!player.getState().getCars().contains(car)) {
+                throw new RuntimeException("You don't have this car:" + car);
+            }
+        }
         for (Car car : routeTurn.getCars()) {
             player.getState().getCars().remove(car);
-            this.board.getBoardState().getCarDrawDeck().addCardToDiscards(car);
+            this.board.getBoardState().discardCar(car);
         }
         CompletedRoute completedRoute = new TTCompletedRoute(routeTurn.getRoute(), player);
         this.board.getBoardState().getCompletedRoutes().add(completedRoute);
@@ -86,7 +97,10 @@ public class TTGame implements Game {
         nextPlayer();
     }
     private void applyTurnDrawCar(DrawCarTurn carTurn) {
-        carTurn.getPlayer().getState().getCars().add(this.board.getBoardState().drawCar(carTurn.getIndex()));
+        Car drawnCar = this.board.getBoardState().drawCar(carTurn.getIndex());
+        if (drawnCar != null) {
+            carTurn.getPlayer().getState().getCars().add(drawnCar);
+        }
         if (!carTurn.getPlayer().getState().mustDrawSecondCar()) {
             nextPlayer();
         }

@@ -15,5 +15,4 @@ public class TTCompletedRoute implements CompletedRoute {
 
     public Route getRoute() { return this.route; }
     public Player getPlayer() { return this.player; }
-
 }

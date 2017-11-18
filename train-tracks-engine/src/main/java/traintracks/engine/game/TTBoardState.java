@@ -7,6 +7,8 @@ import traintracks.api.Deck;
 import traintracks.api.Flavor;
 import traintracks.api.OpenCards;
 import traintracks.api.Player;
+import traintracks.api.PlayerState;
+import traintracks.api.Route;
 import traintracks.api.Ticket;
 
 import java.util.ArrayList;
@@ -42,6 +44,10 @@ public class TTBoardState implements BoardState {
         return this.completedRoutes;
     }
 
+    public boolean completedRoutesContainsRoute(Route route) {
+        return this.completedRoutes.stream().filter(completedRoute -> completedRoute.getRoute() == route).count() > 0;
+    }
+
     public Deck<Car> getCarDrawDeck() {
         return this.carDrawDeck;
     }
@@ -51,28 +57,35 @@ public class TTBoardState implements BoardState {
     }
 
     public Car drawCar(int index) {
+        Car drawnCar;
+        boolean fromDeck = true;
         if (index == -1) {
-            // TODO only allow this if there are cars in the deck
-            this.activePlayer.getState().setMustDrawSecondCar(!this.activePlayer.getState().mustDrawSecondCar());
-            return this.carDrawDeck.drawCard();
+            drawnCar = this.carDrawDeck.drawCard();
         } else {
-            Car drawnCar = this.openCars.getCard(index);
-            boolean firstDraw = !this.activePlayer.getState().mustDrawSecondCar();
-            if (firstDraw) {
-                if (drawnCar.getFlavor() != Flavor.RAINBOW) {
-                    this.activePlayer.getState().setMustDrawSecondCar(true);
-                }
-            } else { // second draw
-                if (drawnCar.getFlavor() == Flavor.RAINBOW) {
+            fromDeck = false;
+            boolean secondDraw = this.activePlayer.getState().mustDrawSecondCar();
+            if (secondDraw) {
+                drawnCar = this.openCars.getCard(index);
+                if ((drawnCar !=null) && (drawnCar.getFlavor() == Flavor.RAINBOW)) {
                     throw new RuntimeException("Sorry. Can't select Rainbow for second draw");
                 }
-                // TODO deal with error condition where drawing rainbow on second card
-                this.activePlayer.getState().setMustDrawSecondCar(false);
             }
-            drawnCar = this.openCars.retrieveCard(index, this.carDrawDeck.drawCard());
+            drawnCar = this.openCars.swapCard(index, this.carDrawDeck.drawCard());
             shuffleOpenCarsIf3Rainbows();
-            return drawnCar;
         }
+        setMustDrawSecondCar(this.activePlayer.getState(), fromDeck, drawnCar);
+        return drawnCar;
+    }
+
+    private void setMustDrawSecondCar(PlayerState playerState, boolean fromDeck, Car drawnCar) {
+        boolean firstDraw = !playerState.mustDrawSecondCar();
+        boolean getSecondDraw = firstDraw && (drawnCar != null) &&
+                (fromDeck || (drawnCar.getFlavor() != Flavor.RAINBOW));
+        playerState.setMustDrawSecondCar(getSecondDraw);
+    }
+
+    public void discardCar(Car car) {
+        this.carDrawDeck.addCardToDiscards(car);
     }
 
     public Deck<Ticket> getTicketDrawDeck() {
@@ -84,35 +97,29 @@ public class TTBoardState implements BoardState {
     }
 
     private void fillOpenCars() {
-        List<Car> initialCards = new ArrayList<>();
         for (int i = 0; i < 5; ++i) {
             Car drawnCar = this.carDrawDeck.drawCard();
             if (drawnCar != null) {
-                initialCards.add(drawnCar);
+                this.openCars.swapCard(i, drawnCar);
             }
         }
-        this.openCars.setCards(initialCards);
         shuffleOpenCarsIf3Rainbows();
     }
 
     private void shuffleOpenCarsIf3Rainbows() {
-        long numOpenRainbows = this.openCars.getCards().stream().filter(car -> car.getFlavor() == Flavor.RAINBOW).count();
-        if (numOpenRainbows >= 3) {
-            for (Car car : this.openCars.getCards()) {
+        long numOpenRainbows = this.openCars.getCards().stream().filter(car -> (car != null) && (car.getFlavor() == Flavor.RAINBOW)).count();
+        if ((numOpenRainbows >= 3) && (getNumNonRainbowCarsInPlay() > 2)) {
+            for (int i = 0; i < this.openCars.getNumOpenings(); ++i) {
+                Car car = this.openCars.swapCard(i, null);
                 this.carDrawDeck.addCardToDiscards(car);
             }
-            this.openCars.clear();
-        }
-        long numNonRainbows = getNumNonRainbowCarsInCarDeck();
-        if (numNonRainbows >= 3) {
             fillOpenCars();
-        } else {
-            // TODO flag that we are horked?
         }
     }
 
-    private long getNumNonRainbowCarsInCarDeck() {
-        return this.getCarDrawDeck().getCards().stream().filter(car -> car.getFlavor() != Flavor.RAINBOW).count() +
-                this.getCarDrawDeck().getDiscards().stream().filter(car -> car.getFlavor() != Flavor.RAINBOW).count();
+    private long getNumNonRainbowCarsInPlay() {
+        return this.getCarDrawDeck().getCards().stream().filter(car -> (car != null) && (car.getFlavor() != Flavor.RAINBOW)).count() +
+                this.getCarDrawDeck().getDiscards().stream().filter(car -> (car != null) && (car.getFlavor() != Flavor.RAINBOW)).count() +
+                this.openCars.getCards().stream().filter(car -> (car != null) && (car.getFlavor() != Flavor.RAINBOW)).count();
     }
 }

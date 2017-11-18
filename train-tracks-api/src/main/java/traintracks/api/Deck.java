@@ -8,5 +8,6 @@ public interface Deck<T> {
     T drawCard();
     void addCardToDiscards(T Card);
     void addCardToBottom(T card);
+    boolean isEmpty();
     void shuffle();
 }

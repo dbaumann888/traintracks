@@ -47,5 +47,8 @@ public class TTDeck<T> implements Deck<T> {
         Collections.shuffle(this.cards);
     }
 
+    public boolean isEmpty() {
+        return this.cards.isEmpty();
+    }
     public String toString() { return "" + this.cards.size(); }
 }
