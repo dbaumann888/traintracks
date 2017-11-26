@@ -1,5 +1,12 @@
 # traintracks
 
+# BUILD
+cd <traintracks-dir>
+mvn clean install
+
+# RUN
+java -jar train-tracks-engine/target/train-tracks-engine-1.0-SNAPSHOT-jar-with-dependencies.jar
+
 # TODO
 maybe don't show routes that you don't have the cards to build
 could show numbers of cars in hand grouped by flavor

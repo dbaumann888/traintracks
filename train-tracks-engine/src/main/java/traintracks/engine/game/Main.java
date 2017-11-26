@@ -1,7 +1,6 @@
 package traintracks.engine.game;
 
 import com.google.common.collect.ImmutableList;
-import sun.java2d.xr.MutableInteger;
 import traintracks.api.Board;
 import traintracks.api.Car;
 import traintracks.api.Flavor;
@@ -20,6 +19,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -105,7 +105,7 @@ public class Main {
             }
             System.out.println(sb.toString());
             String ticketIndex = keyboard.next();
-            int index = ticketIndex.charAt(0) - '0' - 1;
+            int index = Integer.parseInt(ticketIndex);
             if (index == -1) {
                 return null;
             } else if ((index >= 0) && (index < pendingTickets.size())) {
@@ -117,18 +117,16 @@ public class Main {
     }
 
     private static Route readRoute(Scanner keyboard, Board board) {
-        final MutableInteger i = new MutableInteger(0);
+        final AtomicInteger i = new AtomicInteger(0);
         StringBuffer sb = new StringBuffer();
         sb.append("Choose a route:");
-        List<Route> uncompletedRoutes = board.getRouteMap().getRoutes()
-                .stream()
-                .filter(route -> !board.getBoardState().completedRoutesContainsRoute(route)).collect(Collectors.toList());
-        uncompletedRoutes.forEach((route) -> { sb.append(" (").append(i.getValue()).append(")").append(route.toString());
-                    i.setValue(i.getValue() + 1); });
+        List<Route> completableRoutes = board.getBoardState().getCompletableRoutes(board);
+        completableRoutes.forEach((route) -> { sb.append(" (").append(i.get()).append(")").append(route.toString());
+                    i.addAndGet(1); });
         System.out.println(sb.toString());
         String routeIndex = keyboard.next();
-
-        return uncompletedRoutes.get(routeIndex.charAt(0) - '0');
+        int index = Integer.parseInt(routeIndex);
+        return completableRoutes.get(index);
     }
 
     private static List<Car> readCars(Scanner keyboard, Route route, Board board) {
@@ -221,7 +219,7 @@ public class Main {
             System.out.println(sb.toString());
             String indexChar = keyboard.next();
 
-            int index = indexChar.charAt(0) - '0';
+            int index = Integer.parseInt(indexChar);
 
             if ((index >= 0) && (index <= cars.size())) {
                 if (index == cars.size()) {

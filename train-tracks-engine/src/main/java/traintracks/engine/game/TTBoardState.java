@@ -1,18 +1,10 @@
 package traintracks.engine.game;
 
-import traintracks.api.BoardState;
-import traintracks.api.Car;
-import traintracks.api.CompletedRoute;
-import traintracks.api.Deck;
-import traintracks.api.Flavor;
-import traintracks.api.OpenCards;
-import traintracks.api.Player;
-import traintracks.api.PlayerState;
-import traintracks.api.Route;
-import traintracks.api.Ticket;
+import traintracks.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TTBoardState implements BoardState {
     private Player activePlayer;
@@ -44,8 +36,39 @@ public class TTBoardState implements BoardState {
         return this.completedRoutes;
     }
 
+    public List<Route> getUncompletedRoutes(Board board) {
+        return board.getRouteMap().getRoutes()
+                .stream()
+                .filter(route -> !completedRoutesContainsRoute(route)).collect(Collectors.toList());
+    }
+
+    public List<Route> getCompletableRoutes(Board board) {
+        List<Route> uncompletedRoutes = getUncompletedRoutes(board);
+        return uncompletedRoutes.stream().filter(route -> activePlayerCanCompleteRoute(route)).collect(Collectors.toList());
+    }
+
     public boolean completedRoutesContainsRoute(Route route) {
         return this.completedRoutes.stream().filter(completedRoute -> completedRoute.getRoute() == route).count() > 0;
+    }
+
+    private boolean activePlayerCanCompleteRoute(Route route) {
+        Flavor flavorNeeded = route.getFlavor();
+        int numCarsNeeded = route.getLength();
+        List<Car> heldCars = this.activePlayer.getState().getCars();
+        if (flavorNeeded != Flavor.RAINBOW) {
+            long numCarsHeld = heldCars.stream().filter(car -> (car.getFlavor() == flavorNeeded) || (car.getFlavor() == Flavor.RAINBOW)).count();
+            return numCarsHeld >= numCarsNeeded;
+        } else {
+            for (Flavor flavor : Flavor.values()) {
+                if (flavor != Flavor.RAINBOW) {
+                    long numCarsHeld = heldCars.stream().filter(car -> (car.getFlavor() == flavor) || (car.getFlavor() == Flavor.RAINBOW)).count();
+                    if (numCarsHeld >= numCarsNeeded) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 
     public Deck<Car> getCarDrawDeck() {
