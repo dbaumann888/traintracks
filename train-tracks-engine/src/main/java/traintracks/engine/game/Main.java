@@ -7,6 +7,7 @@ import traintracks.api.Flavor;
 import traintracks.api.Game;
 import traintracks.api.OpenCards;
 import traintracks.api.Player;
+import traintracks.api.PlayerState;
 import traintracks.api.PlayerType;
 import traintracks.api.Route;
 import traintracks.api.Ticket;
@@ -20,13 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] argv) {
         Player player1 = new TTPlayer("muish", Color.BLUE, PlayerType.HUMAN);
         Player player2 = new TTPlayer("dantrayal", Color.BLACK, PlayerType.HUMAN);
-        Player player3 = new TTPlayer("magz", Color.BLACK, PlayerType.HUMAN);
+        Player player3 = new TTPlayer("magz", Color.GREEN, PlayerType.HUMAN);
         List<Player> players = ImmutableList.of(player1, player2, player3);
         Board board = TTBoard.getTTBoard(TTSetup.NORTH_AMERICA, player1);
         Game game = new TTGame(players, board);
@@ -52,24 +52,25 @@ public class Main {
         while (true) {
             System.out.println("- - - - - - - - - - - - - - - - - -");
             System.out.println("Active player: " + board.getBoardState().getActivePlayer());
-            displayCars(board.getBoardState().getActivePlayer().getState().getCars());
-            if (board.getBoardState().getActivePlayer().getState().hasPendingTickets()) {
-                if ((board.getBoardState().getActivePlayer().getState().getPendingTickets().size()) == 1) {
-                    board.getBoardState().getActivePlayer().getState().keepPendingTickets();
+            PlayerState playerState = board.getBoardState().getActivePlayer().getState();
+            displayCars(playerState.getCars());
+            if (playerState.hasPendingTickets()) {
+                if ((playerState.getPendingTickets().size()) == playerState.getPendingTicketsMustKeepCount()) {
+                    playerState.keepPendingTickets();
                 } else {
                     Ticket ticket = readDiscardTicket(keyboard, board);
                     if (ticket != null) {
-                        board.getBoardState().getActivePlayer().getState().discardPendingTicket(ticket);
+                        playerState.discardPendingTicket(ticket);
                         board.getBoardState().getTicketDrawDeck().addCardToBottom(ticket);
                     }
-                    if ((ticket == null) || (board.getBoardState().getActivePlayer().getState().getPendingTickets().size()) == 1) {
-                        board.getBoardState().getActivePlayer().getState().keepPendingTickets();
+                    if ((ticket == null) || (playerState.getPendingTickets().size()) == 1) {
+                        playerState.keepPendingTickets();
                     }
                 }
             } else {
                 int numRemainingTickets = board.getTicketDeck().getCards().size();
                 char actionChar;
-                if (board.getBoardState().getActivePlayer().getState().mustDrawSecondCar()) {
+                if (playerState.mustDrawSecondCar()) {
                     actionChar = 'd';
                 } else {
                     String takeTicketsOption = numRemainingTickets >= 3 ? ", (t)ake tickets" : numRemainingTickets == 0 ? "" : ", (t)ake tickets but only " + numRemainingTickets + " left!";
@@ -105,7 +106,7 @@ public class Main {
             }
             System.out.println(sb.toString());
             String ticketIndex = keyboard.next();
-            int index = Integer.parseInt(ticketIndex);
+            int index = Integer.parseInt(ticketIndex) - 1;
             if (index == -1) {
                 return null;
             } else if ((index >= 0) && (index < pendingTickets.size())) {

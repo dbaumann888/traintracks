@@ -4,6 +4,7 @@ import traintracks.api.Car;
 import traintracks.api.PlayerState;
 import traintracks.api.Ticket;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class TTPlayerState implements PlayerState {
     private List<Car> cars;
     private boolean mustDrawSecondCar;
     private List<Ticket> pendingTickets;
+    private int pendingTicketsMustKeepCount;
 
     public TTPlayerState() {
         this.score = 0;
@@ -21,6 +23,7 @@ public class TTPlayerState implements PlayerState {
         this.cars = new ArrayList<>();
         this.tickets = new ArrayList<>();
         this.pendingTickets = new ArrayList<>();
+        this.pendingTicketsMustKeepCount = 0;
         this.mustDrawSecondCar = false;
     }
 
@@ -33,8 +36,17 @@ public class TTPlayerState implements PlayerState {
     public List<Ticket> getTickets() { return this.tickets; }
     public boolean hasPendingTickets() { return this.pendingTickets.size() > 0; }
     public List<Ticket> getPendingTickets() { return this.pendingTickets; }
-    public void addPendingTicket(Ticket ticket) { this.pendingTickets.add(ticket); }
-    public void discardPendingTicket(Ticket ticket) { this.pendingTickets.remove(ticket); }
+    public int getPendingTicketsMustKeepCount() { return this.pendingTicketsMustKeepCount; }
+    public void addPendingTickets(List<Ticket> tickets, int mustKeepCount) {
+        this.pendingTickets.addAll(tickets);
+        this.pendingTicketsMustKeepCount = mustKeepCount;
+    }
+    public void discardPendingTicket(Ticket ticket) {
+        if (this.pendingTicketsMustKeepCount >= this.pendingTickets.size()) {
+            throw new InvalidParameterException("Can't discard any more tickets");
+        }
+        this.pendingTickets.remove(ticket);
+    }
     public void keepPendingTickets() {
         this.tickets.addAll(this.pendingTickets);
         this.pendingTickets.clear();

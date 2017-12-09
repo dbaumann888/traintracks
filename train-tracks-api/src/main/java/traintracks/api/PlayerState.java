@@ -12,7 +12,8 @@ public interface PlayerState {
     void setMustDrawSecondCar(boolean mustDrawSecondCar);
     boolean hasPendingTickets();
     List<Ticket> getPendingTickets();
-    void addPendingTicket(Ticket ticket);
+    int getPendingTicketsMustKeepCount();
+    void addPendingTickets(List<Ticket> tickets, int mustKeepCount);
     void discardPendingTicket(Ticket ticket);
     void keepPendingTickets();
 }

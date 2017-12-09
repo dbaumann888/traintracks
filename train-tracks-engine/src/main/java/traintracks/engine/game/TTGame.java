@@ -8,6 +8,7 @@ import traintracks.api.DrawCarTurn;
 import traintracks.api.Game;
 import traintracks.api.Player;
 import traintracks.api.Route;
+import traintracks.api.Ticket;
 import traintracks.api.Turn;
 
 import java.util.ArrayList;
@@ -41,9 +42,11 @@ public class TTGame implements Game {
             for (int i = 0; i < 4; ++i) {
                 player.getState().getCars().add(this.board.getCarDeck().drawCard());
             }
-            for (int i = 0; i < 1; ++i) {
-                player.getState().getTickets().add(this.board.getTicketDeck().drawCard());
+            List<Ticket> newTickets = new ArrayList<>();
+            for (int i = 0; i < 3; ++i) {
+                newTickets.add(this.board.getTicketDeck().drawCard());
             }
+            player.getState().addPendingTickets(newTickets, 2);
         }
     }
 
@@ -108,9 +111,11 @@ public class TTGame implements Game {
 
     private void applyTurnDrawTickets(Turn turn) {
         int numRemainingTickets = board.getTicketDeck().getCards().size();
+        List<Ticket> newTickets = new ArrayList<>();
         for (int i = 0; i < Math.min(3, numRemainingTickets); ++i) {
-            turn.getPlayer().getState().addPendingTicket(board.getTicketDeck().drawCard());
+            newTickets.add(board.getTicketDeck().drawCard());
         }
+        turn.getPlayer().getState().addPendingTickets(newTickets, 1);
         nextPlayer();
     }
 }
