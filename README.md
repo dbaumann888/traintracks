@@ -18,7 +18,6 @@ end of game when carriage count <= 2 then each player gets one more round.
 add turns to turn history in Game object
 
 could show numbers of cars in hand grouped by flavor
-could show open cars before deciding what action to take in the turn
 
 create containing class for car draw deck and open cars (aka car zone) 
 could keep all states in one container (not in game and boardstate)
@@ -27,12 +26,15 @@ board should have entire deck, not part of deck since it should be stateless
 don't allow building routes option if no routes left to build
 
 compute scores
+ @ sum routes built for player
+ @ sum tickets completed by starting at node city and depth/breadth first search looking for other city
+ @ compute longest route by per player starting at every completed route and building a tree down of unvisited neighbor completed routes and summing route values looking for max
 longest train as part of scoring
 create a new exception class to surface user errors
 build out the maps
-play the game for real and input moves from computer
 improve readchar and prompts -- show board and player state
 add unit tests
+decide on api
 
 ---
 
