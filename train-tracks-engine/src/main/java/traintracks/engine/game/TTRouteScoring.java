@@ -5,10 +5,17 @@ import traintracks.api.RouteScoring;
 import java.util.Map;
 
 public class TTRouteScoring implements RouteScoring {
-    private Map<Integer, Integer> lengthToScoreMap;
+    private final int longestTrainScore;
+    private final Map<Integer, Integer> lengthToScoreMap;
 
-    public TTRouteScoring(Map<Integer, Integer> lengthToScoreMap) {
+    public TTRouteScoring(int longestTrainScore, Map<Integer, Integer> lengthToScoreMap) {
+        this.longestTrainScore = longestTrainScore;
         this.lengthToScoreMap = lengthToScoreMap;
+    }
+
+    @Override
+    public int getLongestTrainScore() {
+        return this.longestTrainScore;
     }
 
     public int getScore(int routeLength) {

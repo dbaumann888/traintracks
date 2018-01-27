@@ -1,6 +1,7 @@
 package traintracks.engine.game;
 
 import traintracks.api.Board;
+import traintracks.api.BoardState;
 import traintracks.api.BuildRouteTurn;
 import traintracks.api.Car;
 import traintracks.api.CompletedRoute;
@@ -19,18 +20,23 @@ public class TTGame implements Game {
     private final UUID id;
     private final List<Player> players;
     private final Board board;
+    private final BoardState boardState;
     private final List<Turn> history;
 
     TTGame(List<Player> players, Board board) {
         this.id = UUID.randomUUID();
         this.players = players;
         this.board = board;
+
+
+        this.boardState = new TTBoardState(players.get(0), board.getCarDeck(), board.getTicketDeck());
         this.history = new ArrayList<Turn>();
         initializePlayers();
     }
 
     public List<Player> getPlayers() { return this.players; }
     public Board getBoard() { return this.board; }
+    public BoardState getBoardState() { return this.boardState; }
     public List<Turn> getTurnHistory() { return this.history; }
     public boolean over() { return false; } // TODO fixme
     public String toString() { return this.getBoard().getName(); }
@@ -51,9 +57,9 @@ public class TTGame implements Game {
     }
 
     private void nextPlayer() {
-        int index = this.players.indexOf(this.board.getBoardState().getActivePlayer());
+        int index = this.players.indexOf(this.boardState.getActivePlayer());
         int nextIndex = (index + 1) % this.players.size();
-        this.board.getBoardState().setActivePlayer(this.players.get(nextIndex));
+        this.boardState.setActivePlayer(this.players.get(nextIndex));
     }
     public void applyTurn(Turn turn) {
         switch (turn.getType()) {
@@ -81,7 +87,7 @@ public class TTGame implements Game {
     private void applyTurnBuildRoute(BuildRouteTurn routeTurn) {
         Player player = routeTurn.getPlayer();
         Route route = routeTurn.getRoute();
-        if (this.board.getBoardState().completedRoutesContainsRoute(routeTurn.getRoute())) {
+        if (this.boardState.completedRoutesContainsRoute(routeTurn.getRoute())) {
             throw new RuntimeException("The route " + route + " has already been completed");
         }
 
@@ -92,15 +98,18 @@ public class TTGame implements Game {
         }
         for (Car car : routeTurn.getCars()) {
             player.getState().getCars().remove(car);
-            this.board.getBoardState().discardCar(car);
+            this.boardState.discardCar(car);
         }
         CompletedRoute completedRoute = new TTCompletedRoute(routeTurn.getRoute(), player);
-        this.board.getBoardState().getCompletedRoutes().add(completedRoute);
+        this.boardState.getCompletedRoutes().add(completedRoute);
         player.getState().setCarriageCount(player.getState().getCarriageCount() - routeTurn.getRoute().getLength());
+        player.getState().updateScore(this.boardState.getCompletedRoutes());
+        // TODO update other players as well because they may no longer the longest route holder: game.updateScores()
         nextPlayer();
     }
+
     private void applyTurnDrawCar(DrawCarTurn carTurn) {
-        Car drawnCar = this.board.getBoardState().drawCar(carTurn.getIndex());
+        Car drawnCar = this.boardState.drawCar(carTurn.getIndex());
         if (drawnCar != null) {
             carTurn.getPlayer().getState().getCars().add(drawnCar);
         }

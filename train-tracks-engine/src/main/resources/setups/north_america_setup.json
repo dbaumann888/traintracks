@@ -41,6 +41,7 @@
     {"flavor": "licorice", "count": 10},
     {"flavor": "rainbow", "count": 10}
   ],
+  "longestRouteScoring": 10,
   "routeScoring": [
     {"length": 1, "score": 1},
     {"length": 2, "score": 2},

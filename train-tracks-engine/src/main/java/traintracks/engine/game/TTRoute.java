@@ -34,6 +34,16 @@ public class TTRoute implements Route {
     public RouteType getType() { return this.type; };
     public int getLength() { return this.length; };
     public Flavor getFlavor() { return this.flavor; };
-    public int getNumEngines() { return this.numEngines; };
+    public int getNumEngines() { return this.numEngines; }
+
+    @Override
+    public boolean connectsTo(Route nextRoute) {
+        return ((this.stationA == nextRoute.getStationA()) || (this.stationA == nextRoute.getStationB()) ||
+                (this.stationB == nextRoute.getStationA()) || (this.stationB == nextRoute.getStationB())) &&
+                !((this.stationA == nextRoute.getStationA()) && (this.stationB == nextRoute.getStationB()) ||
+                        (this.stationA == nextRoute.getStationB()) && (this.stationB == nextRoute.getStationA()));
+    }
+
+    ;
     public String toString() { return getStationA().getName() + "-->" + getStationB().getName(); }
 }

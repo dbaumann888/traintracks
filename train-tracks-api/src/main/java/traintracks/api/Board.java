@@ -9,7 +9,6 @@ public interface Board {
     int getPlayerCarriageCount();
     Map<String, Station> getStations();
     RouteMap getRouteMap();
-    BoardState getBoardState();
     Deck<Car> getCarDeck(); // TODO make a copy of static cards for here
     Deck<Ticket> getTicketDeck(); // TODO make a copy of static cards for here
     RouteScoring getRouteScoring();

@@ -10,4 +10,5 @@ public interface Route {
     int getLength();
     Flavor getFlavor();
     int getNumEngines();
+    boolean connectsTo(Route nextRoute);
 }

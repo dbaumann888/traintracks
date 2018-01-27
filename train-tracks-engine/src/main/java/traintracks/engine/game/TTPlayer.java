@@ -1,5 +1,6 @@
 package traintracks.engine.game;
 
+import traintracks.api.Board;
 import traintracks.api.Player;
 import traintracks.api.PlayerState;
 import traintracks.api.PlayerType;
@@ -14,12 +15,12 @@ public class TTPlayer implements Player {
     private PlayerType type;
     private PlayerState state;
 
-    public TTPlayer(String name, Color color, PlayerType type) {
+    public TTPlayer(String name, Color color, PlayerType type, Board board) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.color = color;
         this.type = type;
-        this.state = new TTPlayerState();
+        this.state = new TTPlayerState(this, board.getRouteScoring());
     }
 
     public UUID getId() { return this.id; }

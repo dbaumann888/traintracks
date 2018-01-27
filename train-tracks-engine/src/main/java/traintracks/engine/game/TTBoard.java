@@ -20,12 +20,11 @@ public class TTBoard implements Board {
     private final int playerCarriageCount;
     private final Map<String, Station> stations;
     private final RouteMap routeMap;
-    private final BoardState boardState;
     private final Deck<Car> carDeck;
     private final Deck<Ticket> ticketDeck;
     private final RouteScoring routeScores;
 
-    private TTBoard(String name, int playerCarriageCount, Map<String, Station> stations, RouteMap routeMap, BoardState gameState,
+    private TTBoard(String name, int playerCarriageCount, Map<String, Station> stations, RouteMap routeMap,
                     Deck<Car> carDeck, Deck<Ticket> ticketDeck, RouteScoring routeScores)
     {
         this.id = UUID.randomUUID();
@@ -33,13 +32,12 @@ public class TTBoard implements Board {
         this.playerCarriageCount = playerCarriageCount;
         this.stations = stations;
         this.routeMap = routeMap;
-        this.boardState = gameState;
         this.carDeck = carDeck;
         this.ticketDeck = ticketDeck;
         this.routeScores = routeScores;
     }
 
-    public static Board getTTBoard(TTSetup setup, Player startingPlayer) {
+    public static Board getTTBoard(TTSetup setup) {
         SetupReader reader = new SetupReader(setup.getPath());
         String jsonBoard = reader.read(TTBoard.class);
         JsonParser parser = new JsonParser();
@@ -98,6 +96,8 @@ public class TTBoard implements Board {
         }
         Deck<Car> carDeck = new TTDeck<>(cars);
 
+        int longestRouteScoring = obj.get("longestRouteScoring").getAsInt();
+
         Map<Integer, Integer> lengthToScoreMap = new HashMap<>();
         JsonArray jRouteScores = obj.getAsJsonArray("routeScoring");
         for (JsonElement jRouteScore : jRouteScores) {
@@ -106,11 +106,9 @@ public class TTBoard implements Board {
             int score = jRouteScoreO.get("score").getAsInt();
             lengthToScoreMap.put(length, score);
         }
-        RouteScoring routeScoring = new TTRouteScoring(lengthToScoreMap);
+        RouteScoring routeScoring = new TTRouteScoring(longestRouteScoring, lengthToScoreMap);
 
-        BoardState boardState = new TTBoardState(startingPlayer, carDeck, ticketDeck);
-
-        return new TTBoard(boardName, carriageCount, stations, routeMap, boardState, carDeck, ticketDeck, routeScoring);
+        return new TTBoard(boardName, carriageCount, stations, routeMap, carDeck, ticketDeck, routeScoring);
     }
 
     public UUID getId() { return this.id; }
@@ -118,7 +116,6 @@ public class TTBoard implements Board {
     public int getPlayerCarriageCount() { return this.playerCarriageCount; }
     public Map<String, Station> getStations() { return this.stations; }
     public RouteMap getRouteMap() { return this.routeMap; }
-    public BoardState getBoardState() { return this.boardState; }
     public Deck<Car> getCarDeck() { return this.carDeck; }
     public Deck<Ticket> getTicketDeck() {
         return this.ticketDeck;
