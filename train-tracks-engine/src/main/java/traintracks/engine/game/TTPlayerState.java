@@ -59,7 +59,7 @@ public class TTPlayerState implements PlayerState {
     }
 
     public void updateScore(List<CompletedRoute> allCompletedRoutes) {
-        this.score.updateScore(allCompletedRoutes, this.tickets, null);
+        this.score.updateScore(allCompletedRoutes, this.tickets);
     }
 
     public String toString() { return "" + this.getScore(); }

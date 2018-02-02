@@ -9,10 +9,13 @@ java -jar train-tracks-engine/target/train-tracks-engine-1.0-SNAPSHOT-jar-with-d
 
 # TODO
 unit test:
-scoring, Route.connectTo(), Ticket.isTicketCompleted()
+scoring of Longest Route
+Route.connectTo()
+Ticket.isTicketCompleted()
 
-test scoring
-change score to not include tickets during game play (except maybe for player to see personal score including tickets
+change score to show public score (and not reveal ticket score to other players)
+
+add PlayerStation for europe built stations by player and pass in to updateScore to compute stationScore;
 
 implement discard tickets
 

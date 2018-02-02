@@ -50,8 +50,10 @@ public class Main {
 
     private static Turn readTurn(Scanner keyboard, Game game) {
         while (true) {
+            Player activePlayer = game.getBoardState().getActivePlayer();
             System.out.println("- - - - - - - - - - - - - - - - - -");
-            System.out.println("Active player: " + game.getBoardState().getActivePlayer());
+            System.out.println("Active player: " + activePlayer);
+            System.out.println(activePlayer.getState().getScore().toString());
             Player player = game.getBoardState().getActivePlayer();
             PlayerState playerState = player.getState();
             displayCars(playerState.getCars());

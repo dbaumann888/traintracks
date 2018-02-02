@@ -15,5 +15,5 @@ public interface PlayerScore {
     int getStationScore();
     int getTotalScore();
     int getPublicScore();
-    void updateScore(List<CompletedRoute> completedRoutes, List<Ticket> tickets, List<Station> stations);
+    void updateScore(List<CompletedRoute> completedRoutes, List<Ticket> tickets);
 }

@@ -80,14 +80,14 @@ public class TTPlayerScore implements PlayerScore {
         return getRouteScore() + getLongestTrainScore() + getStationScore();
     }
 
+    // TODO add PlayerStation as a param to compute stationScore
     @Override
-    public void updateScore(List<CompletedRoute> allCompletedRoutes, List<Ticket> tickets, List<Station> stations) {
+    public void updateScore(List<CompletedRoute> allCompletedRoutes, List<Ticket> tickets) {
         List<Route> completedRoutesByPlayer =
                 allCompletedRoutes.stream().
                 filter(cRoute -> cRoute.getPlayer() == this.player).
                 map(cRoute -> cRoute.getRoute()).
                 collect(Collectors.toList());
-        // TODO subtract uncompleted tickets
         this.routeScore = completedRoutesByPlayer.stream().mapToInt(route -> this.routeScoring.getScore(route.getLength())).sum();
         this.ticketScore = tickets.stream().mapToInt(ticket -> ticket.isCompleted(completedRoutesByPlayer) ? ticket.getScore() : -1 * ticket.getScore()).sum();
         this.hasLongestTrain = getPlayersWithLongestTrain(allCompletedRoutes).contains(this.player);
@@ -150,5 +150,18 @@ public class TTPlayerScore implements PlayerScore {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("score(");
+        sb.append("route=").append(getRouteScore());
+        sb.append(" ticket=").append(getTicketScore());
+        sb.append(" longest=").append(getLongestTrainScore());
+        sb.append(" public=").append(getPublicScore());
+        sb.append(" total=").append(getTotalScore());
+        sb.append(")");
+        return sb.toString();
     }
 }
