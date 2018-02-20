@@ -12,7 +12,12 @@
         <module>train-tracks-engine</module>
         <module>train-tracks-api</module>
         <module>train-tracks-cli</module>
+        <module>train-tracks-service</module>
     </modules>
+
+    <properties>
+        <org.eclipse.jetty.version>9.3.0.M2</org.eclipse.jetty.version>
+    </properties>
 
     <build>
         <plugins>
