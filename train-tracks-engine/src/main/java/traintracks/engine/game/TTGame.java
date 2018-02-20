@@ -23,7 +23,7 @@ public class TTGame implements Game {
     private final BoardState boardState;
     private final List<Turn> history;
 
-    TTGame(List<Player> players, Board board) {
+    public TTGame(List<Player> players, Board board) {
         this.id = UUID.randomUUID();
         this.players = players;
         this.board = board;

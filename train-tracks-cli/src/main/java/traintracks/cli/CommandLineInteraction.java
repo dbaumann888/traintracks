@@ -1,114 +1,93 @@
-package traintracks.engine.game;
+package traintracks.cli;
 
-import com.google.common.collect.ImmutableList;
-import traintracks.api.Board;
 import traintracks.api.Car;
 import traintracks.api.Flavor;
 import traintracks.api.Game;
 import traintracks.api.OpenCards;
 import traintracks.api.Player;
 import traintracks.api.PlayerState;
-import traintracks.api.PlayerType;
 import traintracks.api.Route;
 import traintracks.api.Ticket;
 import traintracks.api.Turn;
 import traintracks.api.TurnType;
+import traintracks.engine.game.TTBuildRouteTurn;
+import traintracks.engine.game.TTDrawCarTurn;
+import traintracks.engine.game.TTTurn;
 
-import java.awt.Color;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Main {
-    public static void main(String[] argv) {
-        Board board = TTBoard.getTTBoard(TTSetup.NORTH_AMERICA);
-        Player player1 = new TTPlayer("muish", Color.BLUE, PlayerType.HUMAN, board);
-        Player player2 = new TTPlayer("dantrayal", Color.BLACK, PlayerType.HUMAN, board);
-        Player player3 = new TTPlayer("magz", Color.GREEN, PlayerType.HUMAN, board);
-        List<Player> players = ImmutableList.of(player1, player2, player3);
-        Game game = new TTGame(players, board);
-        Scanner keyboard = new Scanner(System.in);
-        while (!game.over()) {
-            try {
-                Turn turn = readTurn(keyboard, game);
-                game.applyTurn(turn);
-            } catch (Exception e) {
-                System.out.println("Uh oh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                System.out.println("Exception: " + e.getMessage());
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                e.printStackTrace(pw);
-                String sStackTrace = sw.toString(); // stack trace as a string
-                System.out.println(sStackTrace);
-            }
-            System.out.println(game.toDisplayString());
-        }
+public class CommandLineInteraction {
+
+    private Game game;
+    private Scanner keyboard;
+
+    public CommandLineInteraction(Game game, Scanner keyboard) {
+        this.game = game;
+        this.keyboard = keyboard;
     }
 
-    private static Turn readTurn(Scanner keyboard, Game game) {
+    public Turn readTurn() {
         while (true) {
-            Player activePlayer = game.getBoardState().getActivePlayer();
             System.out.println("- - - - - - - - - - - - - - - - - -");
-            System.out.println("Active player: " + activePlayer);
-            System.out.println(activePlayer.getState().getScore().toString());
-            Player player = game.getBoardState().getActivePlayer();
+            System.out.println("Active player: " + this.game.getBoardState().getActivePlayer());
+            Player player = this.game.getBoardState().getActivePlayer();
             PlayerState playerState = player.getState();
             displayCars(playerState.getCars());
             if (playerState.hasPendingTickets()) {
                 if ((playerState.getPendingTickets().size()) == playerState.getPendingTicketsMustKeepCount()) {
-                    playerState.keepPendingTickets(game.getBoardState().getCompletedRoutes());
+                    playerState.keepPendingTickets(this.game.getBoardState().getCompletedRoutes());
                 } else {
-                    Ticket ticket = readDiscardTicket(keyboard, game);
+                    Ticket ticket = readDiscardTicket();
                     if (ticket != null) {
                         playerState.discardPendingTicket(ticket);
-                        game.getBoardState().getTicketDrawDeck().addCardToBottom(ticket);
+                        this.game.getBoardState().getTicketDrawDeck().addCardToBottom(ticket);
                     }
                     if ((ticket == null) || (playerState.getPendingTickets().size()) == 1) {
-                        playerState.keepPendingTickets(game.getBoardState().getCompletedRoutes());
+                        playerState.keepPendingTickets(this.game.getBoardState().getCompletedRoutes());
                     }
                 }
             } else {
-                int numRemainingTickets = game.getBoard().getTicketDeck().getCards().size();
+                int numRemainingTickets = this.game.getBoard().getTicketDeck().getCards().size();
                 char actionChar;
                 if (playerState.mustDrawSecondCar()) {
                     actionChar = 'd';
                 } else {
                     String takeTicketsOption = numRemainingTickets >= 3 ? ", (t)ake tickets" : numRemainingTickets == 0 ? "" : ", (t)ake tickets but only " + numRemainingTickets + " left!";
                     System.out.println("Choose a turn: (b)uild a route, (d)raw a car" + takeTicketsOption + ": ");
-                    String turnTypeChar = keyboard.next();
+                    String turnTypeChar = this.keyboard.next();
                     actionChar = turnTypeChar.charAt(0);
                 }
 
                 switch (actionChar) {
                     case 'b':
-                        Route route = readRoute(keyboard, game);
+                        Route route = readRoute();
                         // TODO shortcut if player doesn't have any rainbow cars
-                        List<Car> cars = readCars(keyboard, route, game);
-                        return new TTBuildRouteTurn(game.getBoardState().getActivePlayer(), route, cars);
+                        List<Car> cars = readCars(route);
+                        return new TTBuildRouteTurn(this.game.getBoardState().getActivePlayer(), route, cars);
                     case 'd':
-                        int index = readCarDrawIndex(keyboard, game);
-                        return new TTDrawCarTurn(game.getBoardState().getActivePlayer(), index);
+                        int index = readCarDrawIndex();
+                        return new TTDrawCarTurn(this.game.getBoardState().getActivePlayer(), index);
                     case 't':
                         if (numRemainingTickets > 0) {
-                            return new TTTurn(game.getBoardState().getActivePlayer(), TurnType.DRAW_TICKETS);
+                            return new TTTurn(this.game.getBoardState().getActivePlayer(), TurnType.DRAW_TICKETS);
                         }
                 }
             }
         }
     }
 
-    private static Ticket readDiscardTicket(Scanner keyboard, Game game) {
-        List<Ticket> pendingTickets = game.getBoardState().getActivePlayer().getState().getPendingTickets();
+    private Ticket readDiscardTicket() {
+        List<Ticket> pendingTickets = this.game.getBoardState().getActivePlayer().getState().getPendingTickets();
         while (true) {
             StringBuffer sb = new StringBuffer("Choose a ticket to discard: (0) none");
             for (int i = 0; i < pendingTickets.size(); ++i) {
                 sb.append(", (").append(i + 1).append(") ").append(pendingTickets.get(i).toString());
             }
             System.out.println(sb.toString());
-            String ticketIndex = keyboard.next();
+            String ticketIndex = this.keyboard.next();
             int index = Integer.parseInt(ticketIndex) - 1;
             if (index == -1) {
                 return null;
@@ -120,29 +99,29 @@ public class Main {
         }
     }
 
-    private static Route readRoute(Scanner keyboard, Game game) {
+    private Route readRoute() {
         final AtomicInteger i = new AtomicInteger(0);
         StringBuffer sb = new StringBuffer();
         sb.append("Choose a route:");
-        List<Route> completableRoutes = game.getBoardState().getCompletableRoutes(game.getBoard());
+        List<Route> completableRoutes = this.game.getBoardState().getCompletableRoutes(this.game.getBoard());
         completableRoutes.forEach((route) -> { sb.append(" (").append(i.get()).append(")").append(route.toString());
-                    i.addAndGet(1); });
+            i.addAndGet(1); });
         System.out.println(sb.toString());
-        String routeIndex = keyboard.next();
+        String routeIndex = this.keyboard.next();
         int index = Integer.parseInt(routeIndex);
         return completableRoutes.get(index);
     }
 
-    private static List<Car> readCars(Scanner keyboard, Route route, Game game) {
+    private List<Car> readCars(Route route) {
         Flavor chosenFlavor = route.getFlavor();
         if (chosenFlavor == Flavor.RAINBOW) {
-            chosenFlavor = readFlavor(keyboard);
+            chosenFlavor = readFlavor();
         }
         final Flavor finalFlavor = chosenFlavor;
-        List<Car> cars = game.getBoardState().getActivePlayer().getState().getCars();
+        List<Car> cars = this.game.getBoardState().getActivePlayer().getState().getCars();
         long numFlavorCars = cars.stream().filter(car -> car.getFlavor() == finalFlavor).count();
         long numRainbows = cars.stream().filter(car -> car.getFlavor() == Flavor.RAINBOW).count();
-        long numRainbowsToUse = readNumRainbowsToUse(keyboard, chosenFlavor, route, numFlavorCars, numRainbows);
+        long numRainbowsToUse = readNumRainbowsToUse(chosenFlavor, route, numFlavorCars, numRainbows);
 
         long numFlavorCarsLeft = route.getLength() - numRainbowsToUse;
         long numRainbowCarsLeft = numRainbowsToUse;
@@ -159,8 +138,8 @@ public class Main {
         return chosenCars;
     }
 
-    private static long readNumRainbowsToUse(Scanner keyboard, Flavor flavor, Route route,
-                                            long numFlavorCars, long numRainbows)
+    private long readNumRainbowsToUse(Flavor flavor, Route route,
+                                     long numFlavorCars, long numRainbows)
     {
         long minRainbows = Math.max(route.getNumEngines(), route.getLength() - numFlavorCars);
         long maxRainbows = Math.min(route.getLength(), numRainbows);
@@ -177,7 +156,7 @@ public class Main {
             sb.append(" " + numRainbows + " " + Flavor.RAINBOW.toString() + " cars.\n");
             sb.append("Choose the number of rainbows cars to use [" + minRainbows + " - " + maxRainbows + "]:");
             System.out.println(sb.toString());
-            String numRainbowsChar = keyboard.next();
+            String numRainbowsChar = this.keyboard.next();
             long numRainbowsChosen = Long.parseLong(numRainbowsChar);
             if ((numRainbowsChosen >= minRainbows) && (numRainbowsChosen <= maxRainbows)) {
                 return numRainbowsChosen;
@@ -187,7 +166,7 @@ public class Main {
         }
     }
 
-    private static Flavor readFlavor(Scanner keyboard) {
+    private Flavor readFlavor() {
         while (true) {
             StringBuffer sb = new StringBuffer();
             sb.append("Choose a flavor of route:");
@@ -195,7 +174,7 @@ public class Main {
                 sb.append(" (").append(flavor.getSymbol()).append(")").append(flavor.toString());
             }
             System.out.println(sb.toString());
-            String flavorChar = keyboard.next();
+            String flavorChar = this.keyboard.next();
             for (Flavor flavor : Flavor.values()) {
                 if (flavor.getSymbol() == flavorChar.charAt(0)) {
                     return flavor;
@@ -204,24 +183,24 @@ public class Main {
         }
     }
 
-    private static int readCarDrawIndex(Scanner keyboard, Game game) {
+    private int readCarDrawIndex() {
         while (true) {
             StringBuffer sb = new StringBuffer();
             sb.append("Choose a card: ");
-            OpenCards openCards = game.getBoardState().getOpenCards();
+            OpenCards openCards = this.game.getBoardState().getOpenCards();
             List<Car> cars = openCards.getCards();
             for (int i = 0; i < cars.size(); ++i) {
                 char displayIndex = (char)('0' + i);
                 Car car = cars.get(i);
-                if ((car != null) && (car.getFlavor() == Flavor.RAINBOW) && (game.getBoardState().getActivePlayer().getState().mustDrawSecondCar())) {
+                if ((car != null) && (car.getFlavor() == Flavor.RAINBOW) && (this.game.getBoardState().getActivePlayer().getState().mustDrawSecondCar())) {
                     displayIndex = 'X';
                 }
                 sb.append("(").append(displayIndex).append(")" ).append(car).append(" ");
             }
-            String deckString = game.getBoard().getCarDeck().isEmpty() ? "deck(empty)" : "deck";
+            String deckString = this.game.getBoard().getCarDeck().isEmpty() ? "deck(empty)" : "deck";
             sb.append("(").append(cars.size()).append(")").append(deckString).append(": ");
             System.out.println(sb.toString());
-            String indexChar = keyboard.next();
+            String indexChar = this.keyboard.next();
 
             int index = Integer.parseInt(indexChar);
 
@@ -234,7 +213,7 @@ public class Main {
         }
     }
 
-    private static void displayCars(List<Car> cars) {
+    private void displayCars(List<Car> cars) {
         System.out.println(cars.toString());
     }
 

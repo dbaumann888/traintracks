@@ -60,7 +60,7 @@
 	    <archive>
               <manifest>
 		<addClasspath>true</addClasspath>
-		<mainClass>traintracks.engine.game.Main</mainClass>
+		<mainClass>traintracks.cli.TrainTracksCommandLineInterface</mainClass>
               </manifest>
 	    </archive>
 	    <descriptorRefs>

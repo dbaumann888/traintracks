@@ -11,7 +11,7 @@
     <modules>
         <module>train-tracks-engine</module>
         <module>train-tracks-api</module>
-        <module>train-tracks-ui</module>
+        <module>train-tracks-cli</module>
     </modules>
 
     <build>
