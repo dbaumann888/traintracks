@@ -5,14 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.dbaumann888</groupId>
-    <artifactId>train-tracks</artifactId>
+    <artifactId>traintracks</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>train-tracks-engine</module>
-        <module>train-tracks-api</module>
-        <module>train-tracks-cli</module>
-        <module>train-tracks-service</module>
+        <module>traintracks-api</module>
+        <module>traintracks-server-engine</module>
+        <module>traintracks-server-cli</module>
+        <module>traintracks-server</module>
+        <module>traintracks-client-cli</module>
     </modules>
 
     <properties>

@@ -1,0 +1,38 @@
+{
+  "name": "Train Tracks Across Europe",
+  "carriageCount": 45,
+  "stations": [
+    {"name": "London", "coordinates": {"x": 200, "y": 200}},
+    {"name": "Paris", "coordinates": {"x": 210, "y": 400}},
+    {"name": "Moscow", "coordinates": {"x": 800, "y": 200}}
+  ],
+  "routes": [
+    {"stationA": "London", "stationB": "Paris", "type": "ferry", "length": 3, "flavor": "rainbow", "numEngines": 1},
+    {"stationA": "Paris", "stationB": "Moscow", "type": "standard", "length": 8, "flavor": "licorice", "numEngines": 0}
+  ],
+  "ticketDeck": [
+    {"stationA": "London", "stationB": "Paris", "score": 5},
+    {"stationA": "Paris", "stationB": "Moscow", "score": 18},
+    {"stationA": "London", "stationB": "Moscow", "score": 21}
+  ],
+  "carDeck": [
+    {"flavor": "lime", "count": 12},
+    {"flavor": "lemon", "count": 12},
+    {"flavor": "orange", "count": 12},
+    {"flavor": "cherry", "count": 12},
+    {"flavor": "strawberry", "count": 12},
+    {"flavor": "blueberry", "count": 12},
+    {"flavor": "vanilla", "count": 12},
+    {"flavor": "licorice", "count": 12},
+    {"flavor": "rainbow", "count": 14}
+  ],
+  "longestRouteScoring": 10,
+  "routeScoring": [
+    {"length": 1, "score": 1},
+    {"length": 2, "score": 2},
+    {"length": 3, "score": 4},
+    {"length": 4, "score": 7},
+    {"length": 6, "score": 13},
+    {"length": 8, "score": 21}
+  ]
+}

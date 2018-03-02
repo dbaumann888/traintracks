@@ -5,7 +5,7 @@ cd <traintracks-dir>
 mvn clean install
 
 # RUN
-java -jar train-tracks-engine/target/train-tracks-engine-1.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar traintracks-server-cli/target/traintracks-server-cli-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 # TODO
 unit test:

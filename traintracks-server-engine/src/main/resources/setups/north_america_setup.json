@@ -1,0 +1,53 @@
+{
+  "name": "Train Tracks Across North America",
+  "carriageCount": 45,
+  "stations": [
+    {"name": "Vancouver", "coordinates": {"x": 10, "y": 50}},
+    {"name": "San Francisco", "coordinates": {"x": 10, "y": 500}},
+    {"name": "Denver", "coordinates": {"x": 400, "y": 500}},
+    {"name": "Pittsburgh", "coordinates": {"x": 1000, "y": 400}},
+    {"name": "New York City", "coordinates": {"x": 1100, "y": 300}},
+    {"name": "Miami", "coordinates": {"x": 1100, "y": 900}},
+    {"name": "Raleigh", "coordinates": {"x": 1000, "y": 800}}
+  ],
+  "routes": [
+    {"stationA": "Vancouver", "stationB": "San Francisco", "type": "standard", "length": 4, "flavor": "lime", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "San Francisco", "type": "standard", "length": 3, "flavor": "lemon", "numEngines": 0},
+    {"stationA": "Vancouver", "stationB": "Denver", "type": "standard", "length": 2, "flavor": "rainbow", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "Pittsburgh", "type": "standard", "length": 3, "flavor": "strawberry", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "New York City", "type": "standard", "length": 5, "flavor": "lime", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "Miami", "type": "standard", "length": 3, "flavor": "licorice", "numEngines": 0},
+    {"stationA": "Denver", "stationB": "Raleigh", "type": "standard", "length": 3, "flavor": "vanilla", "numEngines": 0}
+  ],
+  "ticketDeck": [
+    {"stationA": "Vancouver", "stationB": "San Francisco", "score": 5},
+    {"stationA": "Denver", "stationB": "San Francisco", "score": 6},
+    {"stationA": "Vancouver", "stationB": "Denver", "score": 8},
+    {"stationA": "Vancouver", "stationB": "New York City", "score": 15},
+    {"stationA": "Vancouver", "stationB": "Miami", "score": 16},
+    {"stationA": "Denver", "stationB": "Raleigh", "score": 20},
+    {"stationA": "Miami", "stationB": "Raleigh", "score": 18},
+    {"stationA": "Miami", "stationB": "San Francisco", "score": 22},
+    {"stationA": "New York City", "stationB": "San Francisco", "score": 17}
+  ],
+  "carDeck": [
+    {"flavor": "lime", "count": 10},
+    {"flavor": "lemon", "count": 10},
+    {"flavor": "orange", "count": 10},
+    {"flavor": "cherry", "count": 10},
+    {"flavor": "strawberry", "count": 10},
+    {"flavor": "blueberry", "count": 10},
+    {"flavor": "vanilla", "count": 10},
+    {"flavor": "licorice", "count": 10},
+    {"flavor": "rainbow", "count": 10}
+  ],
+  "longestRouteScoring": 10,
+  "routeScoring": [
+    {"length": 1, "score": 1},
+    {"length": 2, "score": 2},
+    {"length": 3, "score": 4},
+    {"length": 4, "score": 7},
+    {"length": 5, "score": 10},
+    {"length": 6, "score": 15}
+  ]
+}
