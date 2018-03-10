@@ -8,6 +8,8 @@ mvn clean install
 java -jar traintracks-server-cli/target/traintracks-server-cli-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 # TODO
+fix servlet context NPE when starting up server
+
 unit test:
 scoring of Longest Route
 Route.connectTo()
