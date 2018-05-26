@@ -1,6 +1,7 @@
 package traintracks.server.servlet;
 
 import traintracks.api.Game;
+import traintracks.server.GameFactory;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +20,12 @@ public class TrainTracksServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_OK);
         String jsonPayload = null;
 
-        String query = req.getQueryString();
+        String query = req.getPathInfo();
 
-        Game game = (Game)this.getServletContext().getAttribute("game");
+        // Game game = (Game)this.getServletContext().getAttribute("game");
+        Game game = GameFactory.getGame();
 
-        if ((query != null) && (query.equals("Boards"))) {
+        if ((query != null) && (query.equals("/Boards"))) {
             jsonPayload = game.getBoard().toString();
         }
 

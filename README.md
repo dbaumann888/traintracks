@@ -8,7 +8,20 @@ mvn clean install
 java -jar traintracks-server-cli/target/traintracks-server-cli-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 # TODO
-fix servlet context NPE when starting up server
+fix servletContext ListenerHolder so that in servlet we can get the context with the game
+fix the path so the PathInfo in the servlet doesn't have a leading / (maybe?)
+
+return json results for Board, BoardState, Players, PlayerStates, other objects?
+figure out how to return multiple rows -- eg. for a query returning 3 PlayerStates
+work on client CLI to make requests to server
+work on server to modify BoardStates and PlayerStates
+break down Turns into TurnParts so half turns can be queried (eg. draw the first Car)
+add polling loop to client to get updates about other players turns
+
+later remove the instance of the game in the GameFactory
+later make client polling smarter to detect if queried objects changed before requesting entire objects
+later divide PlayerState into public and private versions so players can't see each other's statuses
+later divide BoardState into public and private versions so players can't see server's private board state
 
 unit test:
 scoring of Longest Route
