@@ -7,6 +7,9 @@ mvn clean install
 # RUN
 java -jar traintracks-server-cli/target/traintracks-server-cli-1.0-SNAPSHOT-jar-with-dependencies.jar
 
+# CALL SERVER
+http://localhost:8200/tt/Boards
+
 # TODO
 fix servletContext ListenerHolder so that in servlet we can get the context with the game
 fix the path so the PathInfo in the servlet doesn't have a leading / (maybe?)
