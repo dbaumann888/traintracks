@@ -7,7 +7,6 @@ import java.util.List;
  * @since 1/26/18
  */
 public interface PlayerScore {
-    Player getPlayer();
     int getRouteScore();
     int getTicketScore();
     boolean hasLongestTrain();
@@ -15,5 +14,5 @@ public interface PlayerScore {
     int getStationScore();
     int getTotalScore();
     int getPublicScore();
-    void updateScore(List<CompletedRoute> completedRoutes, List<Ticket> tickets);
+    void updateScore(Player player, List<CompletedRoute> completedRoutes, List<Ticket> tickets);
 }

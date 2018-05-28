@@ -12,15 +12,14 @@ http://localhost:8200/tt/Boards
 
 # TODO
 fix servletContext ListenerHolder so that in servlet we can get the context with the game
-fix the path so the PathInfo in the servlet doesn't have a leading / (maybe?)
 
-return json results for Board, BoardState, Players, PlayerStates, other objects?
-figure out how to return multiple rows -- eg. for a query returning 3 PlayerStates
+start up clients with a player uuid so each client knows who they are
 work on client CLI to make requests to server
 work on server to modify BoardStates and PlayerStates
 break down Turns into TurnParts so half turns can be queried (eg. draw the first Car)
 add polling loop to client to get updates about other players turns
 
+later add ability for client to create game and/or join a game
 later remove the instance of the game in the GameFactory
 later make client polling smarter to detect if queried objects changed before requesting entire objects
 later divide PlayerState into public and private versions so players can't see each other's statuses

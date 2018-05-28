@@ -62,7 +62,7 @@ public class TestTTPlayerScore extends TestCase {
 
     @Test
     public void testNewRouteScore() {
-        PlayerScore score = new TTPlayerScore(this.mockPlayer1, this.mockRouteScoring);
+        PlayerScore score = new TTPlayerScore(this.mockRouteScoring);
         verifyScore(score, this.mockPlayer1, 0, 0, 0, 0, 0,
                 false);
     }
@@ -70,14 +70,14 @@ public class TestTTPlayerScore extends TestCase {
 
     @Test
     public void testEmptyRouteScore() {
-        PlayerScore player1Score = new TTPlayerScore(this.mockPlayer1, this.mockRouteScoring);
-        PlayerScore player2Score = new TTPlayerScore(this.mockPlayer2, this.mockRouteScoring);
-        PlayerScore player3Score = new TTPlayerScore(this.mockPlayer3, this.mockRouteScoring);
+        PlayerScore player1Score = new TTPlayerScore(this.mockRouteScoring);
+        PlayerScore player2Score = new TTPlayerScore(this.mockRouteScoring);
+        PlayerScore player3Score = new TTPlayerScore(this.mockRouteScoring);
 
         List<CompletedRoute> completedRoutes = ImmutableList.of();
-        player1Score.updateScore(completedRoutes, ImmutableList.of());
-        player2Score.updateScore(completedRoutes, ImmutableList.of());
-        player3Score.updateScore(completedRoutes, ImmutableList.of());
+        player1Score.updateScore(this.mockPlayer1, completedRoutes, ImmutableList.of());
+        player2Score.updateScore(this.mockPlayer2, completedRoutes, ImmutableList.of());
+        player3Score.updateScore(this.mockPlayer3, completedRoutes, ImmutableList.of());
         verifyScore(player1Score, this.mockPlayer1, 0, 0, 0, 0,0,false);
         verifyScore(player2Score, this.mockPlayer2, 0, 0, 0, 0,0,false);
         verifyScore(player3Score, this.mockPlayer3, 0, 0, 0, 0,0,false);
@@ -85,17 +85,17 @@ public class TestTTPlayerScore extends TestCase {
 
     @Test
     public void testRouteScore() {
-        PlayerScore player1Score = new TTPlayerScore(this.mockPlayer1, this.mockRouteScoring);
-        PlayerScore player2Score = new TTPlayerScore(this.mockPlayer2, this.mockRouteScoring);
-        PlayerScore player3Score = new TTPlayerScore(this.mockPlayer3, this.mockRouteScoring);
+        PlayerScore player1Score = new TTPlayerScore(this.mockRouteScoring);
+        PlayerScore player2Score = new TTPlayerScore(this.mockRouteScoring);
+        PlayerScore player3Score = new TTPlayerScore(this.mockRouteScoring);
         CompletedRoute crp1a = new TTCompletedRoute(this.routeAB1, mockPlayer1);
         CompletedRoute crp1b = new TTCompletedRoute(this.routeBC3, mockPlayer1);
         CompletedRoute crp2 = new TTCompletedRoute(this.routeCD2, mockPlayer2);
 
         List<CompletedRoute> completedRoutes = ImmutableList.of(crp1a, crp1b, crp2);
-        player1Score.updateScore(completedRoutes, ImmutableList.of());
-        player2Score.updateScore(completedRoutes, ImmutableList.of());
-        player3Score.updateScore(completedRoutes, ImmutableList.of());
+        player1Score.updateScore(this.mockPlayer1, completedRoutes, ImmutableList.of());
+        player2Score.updateScore(this.mockPlayer2, completedRoutes, ImmutableList.of());
+        player3Score.updateScore(this.mockPlayer3, completedRoutes, ImmutableList.of());
         verifyScore(player1Score, this.mockPlayer1, 4, 0, 1000, 1004,1004,true);
         verifyScore(player2Score, this.mockPlayer2, 2, 0, 0, 2,2,false);
         verifyScore(player3Score, this.mockPlayer3, 0, 0, 0, 0,0,false);
@@ -125,15 +125,15 @@ public class TestTTPlayerScore extends TestCase {
                                    List<Ticket> player1Tickets, List<Ticket> player2Tickets, List<Ticket> player3Tickets,
                                    int player1TicketScore, int player2TicketScore, int player3TicketScore)
     {
-        PlayerScore player1Score = new TTPlayerScore(this.mockPlayer1, this.mockRouteScoring);
-        PlayerScore player2Score = new TTPlayerScore(this.mockPlayer2, this.mockRouteScoring);
-        PlayerScore player3Score = new TTPlayerScore(this.mockPlayer3, this.mockRouteScoring);
+        PlayerScore player1Score = new TTPlayerScore(this.mockRouteScoring);
+        PlayerScore player2Score = new TTPlayerScore(this.mockRouteScoring);
+        PlayerScore player3Score = new TTPlayerScore(this.mockRouteScoring);
         List<CompletedRoute> completedRoutes = player1Routes.stream().map(r -> new TTCompletedRoute(r, this.mockPlayer1)).collect(Collectors.toList());
         completedRoutes.addAll(player2Routes.stream().map(r -> new TTCompletedRoute(r, this.mockPlayer2)).collect(Collectors.toList()));
         completedRoutes.addAll(player3Routes.stream().map(r -> new TTCompletedRoute(r, this.mockPlayer3)).collect(Collectors.toList()));
-        player1Score.updateScore(completedRoutes, player1Tickets);
-        player2Score.updateScore(completedRoutes, player2Tickets);
-        player3Score.updateScore(completedRoutes, player3Tickets);
+        player1Score.updateScore(this.mockPlayer1, completedRoutes, player1Tickets);
+        player2Score.updateScore(this.mockPlayer2, completedRoutes, player2Tickets);
+        player3Score.updateScore(this.mockPlayer3, completedRoutes, player3Tickets);
         assertEquals("wrong player1 ticket score", player1TicketScore, player1Score.getTicketScore());
         assertEquals("wrong player2 ticket score", player2TicketScore, player2Score.getTicketScore());
         assertEquals("wrong player3 ticket score", player3TicketScore, player3Score.getTicketScore());
@@ -142,7 +142,7 @@ public class TestTTPlayerScore extends TestCase {
     private void verifyScore(PlayerScore score, Player player, int routeScore, int ticketScore, int longestScore,
                              int publicScore, int totalScore, boolean hasLongestTrain)
     {
-        assertEquals("wrong player found", player, score.getPlayer());
+        //assertEquals("wrong player found", player, score.getPlayer());
         assertEquals("wrong route score", routeScore, score.getRouteScore());
         assertEquals("wrong ticket score", ticketScore, score.getTicketScore());
         assertEquals("wrong longest train score", longestScore, score.getLongestTrainScore());

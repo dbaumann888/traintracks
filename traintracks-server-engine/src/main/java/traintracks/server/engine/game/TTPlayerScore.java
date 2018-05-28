@@ -5,7 +5,6 @@ import traintracks.api.Player;
 import traintracks.api.PlayerScore;
 import traintracks.api.Route;
 import traintracks.api.RouteScoring;
-import traintracks.api.Station;
 import traintracks.api.Ticket;
 
 import java.util.ArrayList;
@@ -24,25 +23,18 @@ import java.util.stream.Collectors;
  */
 public class TTPlayerScore implements PlayerScore {
 
-    private final Player player;
     private final RouteScoring routeScoring;
     private int routeScore;
     private int ticketScore;
     private boolean hasLongestTrain;
     private int stationScore;
 
-    public TTPlayerScore(Player player, RouteScoring routeScoring) {
-        this.player = player;
+    public TTPlayerScore(RouteScoring routeScoring) {
         this.routeScoring = routeScoring;
         this.routeScore = 0;
         this.ticketScore = 0;
         this.hasLongestTrain = false;
         this.stationScore = 0;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return this.player;
     }
 
     @Override
@@ -82,15 +74,15 @@ public class TTPlayerScore implements PlayerScore {
 
     // TODO add PlayerStation as a param to compute stationScore
     @Override
-    public void updateScore(List<CompletedRoute> allCompletedRoutes, List<Ticket> tickets) {
+    public void updateScore(Player player, List<CompletedRoute> allCompletedRoutes, List<Ticket> tickets) {
         List<Route> completedRoutesByPlayer =
                 allCompletedRoutes.stream().
-                filter(cRoute -> cRoute.getPlayer() == this.player).
+                filter(cRoute -> cRoute.getPlayer() == player).
                 map(cRoute -> cRoute.getRoute()).
                 collect(Collectors.toList());
         this.routeScore = completedRoutesByPlayer.stream().mapToInt(route -> this.routeScoring.getScore(route.getLength())).sum();
         this.ticketScore = tickets.stream().mapToInt(ticket -> ticket.isCompleted(completedRoutesByPlayer) ? ticket.getScore() : -1 * ticket.getScore()).sum();
-        this.hasLongestTrain = getPlayersWithLongestTrain(allCompletedRoutes).contains(this.player);
+        this.hasLongestTrain = getPlayersWithLongestTrain(allCompletedRoutes).contains(player);
         this.stationScore = 0;
     }
 

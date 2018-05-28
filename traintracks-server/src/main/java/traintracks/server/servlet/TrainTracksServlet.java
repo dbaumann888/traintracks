@@ -2,6 +2,8 @@ package traintracks.server.servlet;
 
 import traintracks.api.Game;
 import traintracks.server.GameFactory;
+import traintracks.server.ServletConnection;
+import traintracks.server.TTConnection;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,18 +18,14 @@ public class TrainTracksServlet extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
 
+        ServletConnection connection = new TTConnection();
+
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);
-        String jsonPayload = null;
 
-        String query = req.getPathInfo();
+        String queryString = req.getPathInfo();
 
-        // Game game = (Game)this.getServletContext().getAttribute("game");
-        Game game = GameFactory.getGame();
-
-        if ((query != null) && (query.equals("/Boards"))) {
-            jsonPayload = game.getBoard().toString();
-        }
+        String jsonPayload = connection.query(queryString);
 
         PrintWriter out = resp.getWriter();
         out.println(jsonPayload);

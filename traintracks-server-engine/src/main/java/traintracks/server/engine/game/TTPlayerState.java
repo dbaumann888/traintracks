@@ -11,8 +11,10 @@ import traintracks.api.Ticket;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TTPlayerState implements PlayerState {
+    private UUID id;
     private PlayerScore score;
     private int carriageCount;
     private List<Ticket> tickets;
@@ -21,8 +23,9 @@ public class TTPlayerState implements PlayerState {
     private List<Ticket> pendingTickets;
     private int pendingTicketsMustKeepCount;
 
-    public TTPlayerState(Player player, RouteScoring routeScoring) {
-        this.score = new TTPlayerScore(player, routeScoring);
+    public TTPlayerState(RouteScoring routeScoring) {
+        this.id = UUID.randomUUID();
+        this.score = new TTPlayerScore(routeScoring);
         this.carriageCount = 0;
         this.cars = new ArrayList<>();
         this.tickets = new ArrayList<>();
@@ -31,6 +34,7 @@ public class TTPlayerState implements PlayerState {
         this.mustDrawSecondCar = false;
     }
 
+    public UUID getId() { return this.id; }
     public PlayerScore getScore() { return this.score; }
     public int getCarriageCount() { return this.carriageCount; }
     public void setCarriageCount(int carriageCount) { this.carriageCount = carriageCount; }
@@ -51,14 +55,14 @@ public class TTPlayerState implements PlayerState {
         }
         this.pendingTickets.remove(ticket);
     }
-    public void keepPendingTickets(List<CompletedRoute> allCompletedRoutes) {
+    public void keepPendingTickets(Player player, List<CompletedRoute> allCompletedRoutes) {
         this.tickets.addAll(this.pendingTickets);
         this.pendingTickets.clear();
-        updateScore(allCompletedRoutes);
+        updateScore(player, allCompletedRoutes);
     }
 
-    public void updateScore(List<CompletedRoute> allCompletedRoutes) {
-        this.score.updateScore(allCompletedRoutes, this.tickets);
+    public void updateScore(Player player, List<CompletedRoute> allCompletedRoutes) {
+        this.score.updateScore(player, allCompletedRoutes, this.tickets);
     }
 
     public String toString() { return "" + this.getScore(); }

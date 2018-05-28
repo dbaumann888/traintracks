@@ -40,7 +40,7 @@ public class ClientCommandLineInteraction {
             displayCars(playerState.getCars());
             if (playerState.hasPendingTickets()) {
                 if ((playerState.getPendingTickets().size()) == playerState.getPendingTicketsMustKeepCount()) {
-                    playerState.keepPendingTickets(this.game.getBoardState().getCompletedRoutes());
+                    playerState.keepPendingTickets(player, this.game.getBoardState().getCompletedRoutes());
                 } else {
                     Ticket ticket = readDiscardTicket();
                     if (ticket != null) {
@@ -48,7 +48,7 @@ public class ClientCommandLineInteraction {
                         this.game.getBoardState().getTicketDrawDeck().addCardToBottom(ticket);
                     }
                     if ((ticket == null) || (playerState.getPendingTickets().size()) == 1) {
-                        playerState.keepPendingTickets(this.game.getBoardState().getCompletedRoutes());
+                        playerState.keepPendingTickets(player, this.game.getBoardState().getCompletedRoutes());
                     }
                 }
             } else {

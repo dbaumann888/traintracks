@@ -20,7 +20,7 @@ public class TTPlayer implements Player {
         this.name = name;
         this.color = color;
         this.type = type;
-        this.state = new TTPlayerState(this, board.getRouteScoring());
+        this.state = new TTPlayerState(board.getRouteScoring());
     }
 
     public UUID getId() { return this.id; }

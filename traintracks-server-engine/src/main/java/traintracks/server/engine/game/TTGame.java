@@ -103,7 +103,7 @@ public class TTGame implements Game {
         CompletedRoute completedRoute = new TTCompletedRoute(routeTurn.getRoute(), player);
         this.boardState.getCompletedRoutes().add(completedRoute);
         player.getState().setCarriageCount(player.getState().getCarriageCount() - routeTurn.getRoute().getLength());
-        player.getState().updateScore(this.boardState.getCompletedRoutes());
+        player.getState().updateScore(player, this.boardState.getCompletedRoutes());
         // TODO update other players as well because they may no longer the longest route holder: game.updateScores()
         nextPlayer();
     }

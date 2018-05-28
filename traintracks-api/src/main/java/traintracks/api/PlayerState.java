@@ -1,8 +1,10 @@
 package traintracks.api;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface PlayerState {
+    UUID getId();
     PlayerScore getScore();
     int getCarriageCount();
     void setCarriageCount(int carriageCount);
@@ -15,6 +17,6 @@ public interface PlayerState {
     int getPendingTicketsMustKeepCount();
     void addPendingTickets(List<Ticket> tickets, int mustKeepCount);
     void discardPendingTicket(Ticket ticket);
-    void keepPendingTickets(List<CompletedRoute> allCompletedRoutes);
-    void updateScore(List<CompletedRoute> allCompletedRoutes);
+    void keepPendingTickets(Player player, List<CompletedRoute> allCompletedRoutes);
+    void updateScore(Player player, List<CompletedRoute> allCompletedRoutes);
 }
