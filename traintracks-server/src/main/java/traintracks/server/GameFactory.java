@@ -23,7 +23,7 @@ public class GameFactory {
         Player player2 = new TTPlayer("dantrayal", Color.BLACK, PlayerType.HUMAN, board);
         Player player3 = new TTPlayer("magz", Color.GREEN, PlayerType.HUMAN, board);
         List<Player> players = ImmutableList.of(player1, player2, player3);
-        this.game = new TTGame(players, board);
+        this.game = new TTGame("Train Tracks Server Showdown", players, board);
     }
 
     public static Game getGame() {

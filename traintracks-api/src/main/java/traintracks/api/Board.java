@@ -6,10 +6,11 @@ import java.util.UUID;
 public interface Board {
     UUID getId();
     String getName();
+    BoardState getBoardState();
     int getPlayerCarriageCount();
     Map<String, Station> getStations();
     RouteMap getRouteMap();
-    Deck<Car> getCarDeck(); // TODO make a copy of static cards for here
-    Deck<Ticket> getTicketDeck(); // TODO make a copy of static cards for here
+    Deck<Car> getOriginalCarDeck();
+    Deck<Ticket> getOriginalTicketDeck();
     RouteScoring getRouteScoring();
 }

@@ -1,13 +1,13 @@
 package traintracks.api;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface Game {
-    void applyTurn(Turn turn);
+    UUID getId();
+    String getName();
     List<Player> getPlayers();
     Board getBoard();
-    BoardState getBoardState();
-    List<Turn> getTurnHistory();
-    boolean over();
+    GameState getGameState();
     String toDisplayString();
 }

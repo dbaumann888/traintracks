@@ -1,5 +1,6 @@
 package traintracks.client.cli;
 
+import traintracks.api.BoardState;
 import traintracks.api.Car;
 import traintracks.api.Flavor;
 import traintracks.api.Game;
@@ -32,27 +33,28 @@ public class ClientCommandLineInteraction {
     }
 
     public Turn readTurn() {
+        BoardState boardState = this.game.getBoard().getBoardState();
         while (true) {
             System.out.println("- - - - - - - - - - - - - - - - - -");
-            System.out.println("Active player: " + this.game.getBoardState().getActivePlayer());
-            Player player = this.game.getBoardState().getActivePlayer();
+            Player player = this.game.getGameState().getActivePlayer();
+            System.out.println("Active player: " + player);
             PlayerState playerState = player.getState();
             displayCars(playerState.getCars());
             if (playerState.hasPendingTickets()) {
                 if ((playerState.getPendingTickets().size()) == playerState.getPendingTicketsMustKeepCount()) {
-                    playerState.keepPendingTickets(player, this.game.getBoardState().getCompletedRoutes());
+                    playerState.keepPendingTickets(player, boardState.getCompletedRoutes());
                 } else {
                     Ticket ticket = readDiscardTicket();
                     if (ticket != null) {
                         playerState.discardPendingTicket(ticket);
-                        this.game.getBoardState().getTicketDrawDeck().addCardToBottom(ticket);
+                        boardState.getTicketDrawDeck().addCardToBottom(ticket);
                     }
                     if ((ticket == null) || (playerState.getPendingTickets().size()) == 1) {
-                        playerState.keepPendingTickets(player, this.game.getBoardState().getCompletedRoutes());
+                        playerState.keepPendingTickets(player, boardState.getCompletedRoutes());
                     }
                 }
             } else {
-                int numRemainingTickets = this.game.getBoard().getTicketDeck().getCards().size();
+                int numRemainingTickets = boardState.getTicketDrawDeck().getCards().size();
                 char actionChar;
                 if (playerState.mustDrawSecondCar()) {
                     actionChar = 'd';
@@ -82,7 +84,7 @@ public class ClientCommandLineInteraction {
     }
 
     private Ticket readDiscardTicket() {
-        List<Ticket> pendingTickets = this.game.getBoardState().getActivePlayer().getState().getPendingTickets();
+        List<Ticket> pendingTickets = this.game.getGameState().getActivePlayer().getState().getPendingTickets();
         while (true) {
             StringBuffer sb = new StringBuffer("Choose a ticket to discard: (0) none");
             for (int i = 0; i < pendingTickets.size(); ++i) {
@@ -102,10 +104,11 @@ public class ClientCommandLineInteraction {
     }
 
     private Route readRoute() {
+        Player player = this.game.getGameState().getActivePlayer();
         final AtomicInteger i = new AtomicInteger(0);
         StringBuffer sb = new StringBuffer();
         sb.append("Choose a route:");
-        List<Route> completableRoutes = this.game.getBoardState().getCompletableRoutes(this.game.getBoard());
+        List<Route> completableRoutes = this.game.getBoard().getBoardState().getCompletableRoutes(player, this.game.getBoard());
         completableRoutes.forEach((route) -> { sb.append(" (").append(i.get()).append(")").append(route.toString());
             i.addAndGet(1); });
         System.out.println(sb.toString());
@@ -120,7 +123,7 @@ public class ClientCommandLineInteraction {
             chosenFlavor = readFlavor();
         }
         final Flavor finalFlavor = chosenFlavor;
-        List<Car> cars = this.game.getBoardState().getActivePlayer().getState().getCars();
+        List<Car> cars = this.game.getGameState().getActivePlayer().getState().getCars();
         long numFlavorCars = cars.stream().filter(car -> car.getFlavor() == finalFlavor).count();
         long numRainbows = cars.stream().filter(car -> car.getFlavor() == Flavor.RAINBOW).count();
         long numRainbowsToUse = readNumRainbowsToUse(chosenFlavor, route, numFlavorCars, numRainbows);
@@ -189,17 +192,17 @@ public class ClientCommandLineInteraction {
         while (true) {
             StringBuffer sb = new StringBuffer();
             sb.append("Choose a card: ");
-            OpenCards openCards = this.game.getBoardState().getOpenCards();
+            OpenCards openCards = this.game.getBoard().getBoardState().getOpenCards();
             List<Car> cars = openCards.getCards();
             for (int i = 0; i < cars.size(); ++i) {
                 char displayIndex = (char)('0' + i);
                 Car car = cars.get(i);
-                if ((car != null) && (car.getFlavor() == Flavor.RAINBOW) && (this.game.getBoardState().getActivePlayer().getState().mustDrawSecondCar())) {
+                if ((car != null) && (car.getFlavor() == Flavor.RAINBOW) && (this.game.getGameState().getActivePlayer().getState().mustDrawSecondCar())) {
                     displayIndex = 'X';
                 }
                 sb.append("(").append(displayIndex).append(")" ).append(car).append(" ");
             }
-            String deckString = this.game.getBoard().getCarDeck().isEmpty() ? "deck(empty)" : "deck";
+            String deckString = this.game.getBoard().getBoardState().getCarDrawDeck().isEmpty() ? "deck(empty)" : "deck";
             sb.append("(").append(cars.size()).append(")").append(deckString).append(": ");
             System.out.println(sb.toString());
             String indexChar = this.keyboard.next();

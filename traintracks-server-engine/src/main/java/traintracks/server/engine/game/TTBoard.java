@@ -17,24 +17,26 @@ import java.util.UUID;
 public class TTBoard implements Board {
     private final UUID id;
     private final String name;
+    private final BoardState boardState;
     private final int playerCarriageCount;
     private final Map<String, Station> stations;
     private final RouteMap routeMap;
-    private final Deck<Car> carDeck;
-    private final Deck<Ticket> ticketDeck;
+    private final Deck<Car> originalCarDeck;
+    private final Deck<Ticket> originalTicketDeck;
     private final RouteScoring routeScores;
 
     private TTBoard(String name, int playerCarriageCount, Map<String, Station> stations, RouteMap routeMap,
-                    Deck<Car> carDeck, Deck<Ticket> ticketDeck, RouteScoring routeScores)
+                    Deck<Car> originalCarDeck, Deck<Ticket> originalTicketDeck, RouteScoring routeScores)
     {
         this.id = UUID.randomUUID();
         this.name = name;
         this.playerCarriageCount = playerCarriageCount;
         this.stations = stations;
         this.routeMap = routeMap;
-        this.carDeck = carDeck;
-        this.ticketDeck = ticketDeck;
+        this.originalCarDeck = originalCarDeck;
+        this.originalTicketDeck = originalTicketDeck;
         this.routeScores = routeScores;
+        this.boardState = new TTBoardState(originalCarDeck.clone(), originalTicketDeck.clone());
     }
 
     public static Board getTTBoard(TTSetup setup) {
@@ -113,12 +115,11 @@ public class TTBoard implements Board {
 
     public UUID getId() { return this.id; }
     public String getName() { return this.name; }
+    public BoardState getBoardState() { return this.boardState; }
     public int getPlayerCarriageCount() { return this.playerCarriageCount; }
     public Map<String, Station> getStations() { return this.stations; }
     public RouteMap getRouteMap() { return this.routeMap; }
-    public Deck<Car> getCarDeck() { return this.carDeck; }
-    public Deck<Ticket> getTicketDeck() {
-        return this.ticketDeck;
-    }
+    public Deck<Car> getOriginalCarDeck() { return this.originalCarDeck; }
+    public Deck<Ticket> getOriginalTicketDeck() { return this.originalTicketDeck; }
     public RouteScoring getRouteScoring() { return this.routeScores; }
 }

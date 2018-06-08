@@ -24,14 +24,14 @@ public class TrainTracksServerCommandLineInterface {
         Player player2 = new TTPlayer("dantrayal", Color.BLACK, PlayerType.HUMAN, board);
         Player player3 = new TTPlayer("magz", Color.GREEN, PlayerType.HUMAN, board);
         List<Player> players = ImmutableList.of(player1, player2, player3);
-        Game game = new TTGame(players, board);
+        Game game = new TTGame("Train Tracks Infinity Wars", players, board);
         Scanner keyboard = new Scanner(System.in);
 
         ServerCommandLineInteraction cli = new ServerCommandLineInteraction(game, keyboard);
-        while (!game.over()) {
+        while (!game.getGameState().over()) {
             try {
                 Turn turn = cli.readTurn();
-                game.applyTurn(turn);
+                game.getGameState().applyTurn(game, turn);
             } catch (Exception e) {
                 System.out.println("Uh oh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("Exception: " + e.getMessage());

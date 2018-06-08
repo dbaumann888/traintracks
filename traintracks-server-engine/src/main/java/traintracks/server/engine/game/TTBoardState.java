@@ -7,14 +7,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TTBoardState implements BoardState {
-    private Player activePlayer;
     private List<CompletedRoute> completedRoutes;
     private Deck<Car> carDrawDeck;
     private OpenCards<Car> openCars;
     private Deck<Ticket> ticketDrawDeck;
 
-    public TTBoardState(Player startingPlayer, Deck<Car> fullCarDeck, Deck<Ticket> fullTicketDeck) {
-        this.activePlayer = startingPlayer;
+    public TTBoardState(Deck<Car> fullCarDeck, Deck<Ticket> fullTicketDeck) {
         this.completedRoutes = new ArrayList<>();
         this.carDrawDeck = fullCarDeck;
         this.carDrawDeck.shuffle();
@@ -22,14 +20,6 @@ public class TTBoardState implements BoardState {
         fillOpenCars();
         this.ticketDrawDeck = fullTicketDeck;
         this.ticketDrawDeck.shuffle();
-    }
-
-    public Player getActivePlayer() {
-        return this.activePlayer;
-    }
-
-    public void setActivePlayer(Player nextPlayer) {
-        this.activePlayer = nextPlayer;
     }
 
     public List<CompletedRoute> getCompletedRoutes() {
@@ -42,19 +32,19 @@ public class TTBoardState implements BoardState {
                 .filter(route -> !completedRoutesContainsRoute(route)).collect(Collectors.toList());
     }
 
-    public List<Route> getCompletableRoutes(Board board) {
+    public List<Route> getCompletableRoutes(Player player, Board board) {
         List<Route> uncompletedRoutes = getUncompletedRoutes(board);
-        return uncompletedRoutes.stream().filter(route -> activePlayerCanCompleteRoute(route)).collect(Collectors.toList());
+        return uncompletedRoutes.stream().filter(route -> activePlayerCanCompleteRoute(player, route)).collect(Collectors.toList());
     }
 
     public boolean completedRoutesContainsRoute(Route route) {
         return this.completedRoutes.stream().filter(completedRoute -> completedRoute.getRoute() == route).count() > 0;
     }
 
-    private boolean activePlayerCanCompleteRoute(Route route) {
+    private boolean activePlayerCanCompleteRoute(Player player, Route route) {
         Flavor flavorNeeded = route.getFlavor();
         int numCarsNeeded = route.getLength();
-        List<Car> heldCars = this.activePlayer.getState().getCars();
+        List<Car> heldCars = player.getState().getCars();
         if (flavorNeeded != Flavor.RAINBOW) {
             long numCarsHeld = heldCars.stream().filter(car -> (car.getFlavor() == flavorNeeded) || (car.getFlavor() == Flavor.RAINBOW)).count();
             return numCarsHeld >= numCarsNeeded;
@@ -79,14 +69,14 @@ public class TTBoardState implements BoardState {
         return this.openCars;
     }
 
-    public Car drawCar(int index) {
+    public Car drawCar(Player player, int index) {
         Car drawnCar;
         boolean fromDeck = true;
         if (index == -1) {
             drawnCar = this.carDrawDeck.drawCard();
         } else {
             fromDeck = false;
-            boolean secondDraw = this.activePlayer.getState().mustDrawSecondCar();
+            boolean secondDraw = player.getState().mustDrawSecondCar();
             if (secondDraw) {
                 drawnCar = this.openCars.getCard(index);
                 if ((drawnCar !=null) && (drawnCar.getFlavor() == Flavor.RAINBOW)) {
@@ -96,7 +86,7 @@ public class TTBoardState implements BoardState {
             drawnCar = this.openCars.swapCard(index, this.carDrawDeck.drawCard());
             shuffleOpenCarsIf3Rainbows();
         }
-        setMustDrawSecondCar(this.activePlayer.getState(), fromDeck, drawnCar);
+        setMustDrawSecondCar(player.getState(), fromDeck, drawnCar);
         return drawnCar;
     }
 

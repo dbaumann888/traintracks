@@ -3,6 +3,7 @@ package traintracks.api;
 import java.util.List;
 
 public interface Deck<T> {
+    Deck<T> clone();
     List<T> getCards();
     List<T> getDiscards();
     T drawCard();

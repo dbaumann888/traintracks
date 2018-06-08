@@ -15,6 +15,15 @@ public class TTDeck<T> implements Deck<T> {
         this.discards = new ArrayList<>();
     }
 
+    public TTDeck(List<T> cards, List<T> discards) {
+        this.cards = cards;
+        this.discards = discards;
+    }
+
+    public Deck<T> clone() {
+        return new TTDeck(new ArrayList<>(this.cards), new ArrayList<>(this.discards));
+    }
+
     public List<T> getCards() {
         return this.cards;
     }

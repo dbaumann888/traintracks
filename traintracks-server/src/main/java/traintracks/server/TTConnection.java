@@ -67,7 +67,7 @@ public class TTConnection implements ServletConnection {
                 break;
             case "board-states":
                 if (id != null) {
-                    jsonPayload = gson.toJson(game.getBoardState());
+                    jsonPayload = gson.toJson(game.getBoard().getBoardState());
                 } else {
                     throw new IllegalArgumentException("can't request list of BoardStates");
                 }
